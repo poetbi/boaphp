@@ -1,0 +1,43 @@
+@charset "utf-8";
+
+body{
+	margin: 0;
+	padding: 0;
+	line-height: 2;
+	font-size: 1rem;
+	display: flex;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+	box-sizing: border-box;
+	font-weight: 200;
+}
+dl{
+	border: solid 1px #CCC;
+	width: 60%;
+}
+dt{
+	text-align: center;
+	font-size: 2rem;
+}
+dd{
+	margin: 0;
+	padding: 1rem 2rem;
+}
+dd i{
+	margin: 0 0.25rem;
+	font-size: 0.95rem;
+	color: red;
+	font-style: normal;
+}
+dd > div{
+	text-indent: 2rem;
+}
+dd .file{
+	font-size: 0.9rem;
+	color: #999;
+}
+h1, h2, h3{
+	text-align: center;
+	font-weight: 200;
+}

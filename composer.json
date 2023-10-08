@@ -1,0 +1,28 @@
+{
+	"name": "boasoft/boaphp",
+	"description": "A flexible and configurable php framework",
+	"type": "project",
+	"keywords": [
+		"boaPHP",
+		"boasoft",
+		"framework",
+		"PHP"
+	],
+	"homepage": "http://boasoft.top/",
+	"license": "Apache-2.0",
+	"authors": [
+		{
+			"name": "poetbi",
+			"email": "poetbi@163.com"
+		}
+	],
+	"require": {
+		"php": ">=5.4.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"boa\\": "boa",
+			"mod\\": "mod"
+		}
+	}
+}
