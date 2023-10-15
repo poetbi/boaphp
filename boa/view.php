@@ -61,7 +61,7 @@ class view{
 			'num' => $num
 		];
 
-		$str = boa::json()->encode($arr, JSON_UNESCAPED_UNICODE);
+		$str = boa::json()->encode($arr);
 		if($return){
 			return $str;
 		}else{
@@ -141,7 +141,7 @@ class view{
 			'num' => $num
 		];
 
-		$str = boa::json()->encode($arr, JSON_UNESCAPED_UNICODE);
+		$str = boa::json()->encode($arr);
 		$str = "$callback($str);";
 		if($return){
 			return $str;

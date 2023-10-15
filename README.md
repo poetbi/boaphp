@@ -1,7 +1,9 @@
 # 介绍
 ![image](http://boasoft.top/res/logo.png)
 
-boaPHP是一款免费开源、灵活易用的配置式PHP框架，MVC设计模式，完全面向对象，易学易用、便于快速开发。
+boaPHP是一款免费开源、灵活易用的配置式PHP框架，MVC设计模式，完全面向对象，易学易用、便于快速开发
+
+支持PHP版本：PHP 5.4 - PHP 8.2
 
 # 帮助
 * 文档：http://boasoft.top/docs/

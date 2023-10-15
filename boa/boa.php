@@ -376,8 +376,7 @@ class boa{
 			if(is_resource($v)){
 				$v = serialize($v);
 			}else{
-				$json = self::json(['en_option' => JSON_UNESCAPED_UNICODE]);
-				$v = $json->encode($v);
+				$v = self::json()->encode($v);
 			}
 		}
 		$time = date(boa::lang('boa.locale.longtime'));
