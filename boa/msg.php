@@ -121,7 +121,8 @@ class msg{
 		}else{
 			foreach($args as $i => $v){
 				if($i > 0){
-					$args[$i] = '<i>'. self::filter_path($v) .'</i>';
+					$args[$i] = self::filter_path($v);
+					if(self::$type == 'msg') $args[$i] = '<i>'. $args[$i] .'</i>';
 				}
 			}
 			$arr['msg'] = call_user_func_array(['\\boa\\boa', 'lang'], $args);
@@ -246,12 +247,14 @@ class msg{
 	}
 
 	private static function format_log($log, $br = '<br>'){
-		if(is_array($log)){
-			$str = $br .'@'. implode($br .'@', $log);
-		}else{
-			$str = $br .'@'. $log;
+		if($log){
+			if(is_array($log)){
+				$str = $br .'@'. implode($br .'@', $log);
+			}else{
+				$str = $br .'@'. $log;
+			}
+			return $str;
 		}
-		return $str;
 	}
 }
 ?>

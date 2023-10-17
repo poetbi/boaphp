@@ -9,7 +9,7 @@ namespace boa;
 class database{
 	public $cfg = [
 		'driver' => 'pdo', //pdo, mysqli
-		'prefix' => 'bs_',
+		'prefix' => '',
 		'charset' => 'utf8',
 		'persist' => false,
 		'option' => [],

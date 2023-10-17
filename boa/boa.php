@@ -114,19 +114,12 @@ class boa{
 				break;
 
 			default:
-				$new = [];
 				$arr = explode('.', $k);
-				$max = count($arr) - 1;
-				for($i = $max; $i >= 0; $i--){
-					$key = $arr[$i];
-					if($i == $max){
-						$new[$key] = $v;
-					}else{
-						$new[$key] = $new;
-						unset($new[$arr[$i+1]]);
-					}
+				if(count($arr) > 1){
+					self::$env[0][$arr[0]][$arr[1]] = $v;
+				}else{
+					self::$env[0][$k] = $v;
 				}
-				self::$env[0] = $new;
 		}
 	}
 

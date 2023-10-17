@@ -16,7 +16,7 @@ class validater{
 	public function execute($key, $val, $rule){
 		$this->field = $key;
 		$this->value = $val;
-		$this->label = $this->get_lng($rule['label']);
+		if($rule['label']) $this->label = $this->get_lng($rule['label']);
 
 		msg::set_data([
 			'field' => $this->field,
