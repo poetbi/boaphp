@@ -10,9 +10,7 @@ class http{
 	private $obj;
 
 	public function __construct($cfg = []){
-		if(!$cfg['driver']){
-			$cfg['driver'] = 'curl';
-		}
+		if(!$cfg['driver']) $cfg['driver'] = 'curl';
 
 		if(isset($cfg['posttype']) && !isset($cfg['mimetype'])){
 			$cfg['mimetype'] = $this->mimetype($cfg['posttype']);

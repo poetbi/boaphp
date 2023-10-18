@@ -22,7 +22,7 @@ class compiler{
 	
 	public function __construct(){
 		$this->tag = '/'. chr(8) .'[a-f0-9]{16}'. chr(8) .'/';
-		$cfg = unserialize(boa::constant('COMPILER'));
+		$cfg = boa::const('COMPILER');
 		if(is_array($cfg)){
 			$this->cfg = array_merge($this->cfg, $cfg);
 		}
@@ -156,10 +156,11 @@ class compiler{
 
 	private function cb_con($m){
 		$mod = boa::env('mod');
-		if(defined($mod .'\\'. $m[1])){
-			$str = "\\$mod\\". $m[1];
-		}else if(defined($m[1])){
-			$str = $m[1];
+		$v = explode('.', $m[1]);
+		if(defined($mod .'\\'. $v[0])){
+			$str = "\\$mod\\". $this->arr_format($m[1]);
+		}else if(defined($v[0])){
+			$str = $this->arr_format($m[1]);
 		}else{
 			return '{'. $m[1] .'}';
 		}
@@ -301,7 +302,7 @@ class compiler{
 
 	private function arg_str(&$arg){
 		$temp = [];
-		preg_match_all('/(?<=^|\s)[\'"].+?[\'"](?=\s|$)/', $arg, $arr);
+		preg_match_all('/(?<=^|\s)[\'"].*?[\'"](?=\s|$)/', $arg, $arr);
 		foreach($arr[0] as $k => $v){
 			$k = chr(8) .$k. chr(8);
 			$temp[$k] = $v;
@@ -350,7 +351,7 @@ class compiler{
 
 	private function tags(){
 		$exclude = 'if|else|list';
-		$arr['CON']  = ['/'. $this->_s .'([A-Z_0-9]+?)'. $this->_e .'/', '', [$this, 'cb_con']];
+		$arr['CON']  = ['/'. $this->_s .'([\w\.]+?)'. $this->_e .'/', '', [$this, 'cb_con']];
 		$arr['VAR']  = ['/'. $this->_s .'\$([\w\.\+\-]+?)'. $this->_e .'/', '', [$this, 'cb_var']];
 		$arr['LANG'] = ['/'. $this->_s .'@\s*([^\{\}]+?)'. $this->_e .'/', '', [$this, 'cb_lang']];
 		$arr['IF']   = ['/'. $this->_s .'if\s+([^\{\}]+?)'. $this->_e .'/', '', [$this, 'cb_if']];

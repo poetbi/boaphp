@@ -18,10 +18,9 @@ class url implements cacher{
 	
 	public function __construct($args){
 		if(defined('ROUTER')){
-			$cfg = unserialize(ROUTER);
-			if($cfg && $cfg['param_val']){
-				$this->param_val = $cfg['param_val'];
-				$this->default = $cfg['default'];
+			if(ROUTER && ROUTER['param_val']){
+				$this->param_val = ROUTER['param_val'];
+				$this->default = ROUTER['default'];
 			}
 		}
 

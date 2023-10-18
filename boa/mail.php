@@ -10,9 +10,7 @@ class mail{
 	private $obj;
 
     public function __construct($cfg = []){
- 		if(!$cfg['driver']){
-			$cfg['driver'] = 'smtp';
-		}
+ 		if(!$cfg['driver']) $cfg['driver'] = 'smtp';
 
 		if($cfg['from']){
 			list($addr, $name) = explode(' ', $cfg['from'], 2);

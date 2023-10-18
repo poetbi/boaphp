@@ -8,16 +8,12 @@ namespace boa\session\driver;
 
 class file{
 	private $cfg = [
-        'path' => '' //BS_VAR .'session/'
+        'path' => BS_VAR .'session/'
     ];
 
 	public function __construct($cfg){
         if($cfg){
 			$this->cfg = array_merge($this->cfg, $cfg);
-		}
-		
-		if(!$this->cfg['path']){
-			$this->cfg['path'] = BS_VAR .'session/';
 		}
 
 		if(!file_exists($this->cfg['path'])){

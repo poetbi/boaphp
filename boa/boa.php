@@ -174,7 +174,7 @@ class boa{
 		return new $cls();
 	}
 
-	public static function constant($key){
+	public static function const($key){
 		$mod = self::env('mod');
 		if(defined("\\$mod\\$key")){
 			return constant("\\$mod\\$key");
@@ -212,9 +212,6 @@ class boa{
 			$arr = include($config);
 			foreach($arr as $k => $v){
 				$k = strtoupper($k);
-				if(is_array($v)){
-					$v = serialize($v);
-				}
 				define($k, $v);
 			}
 		}
@@ -252,14 +249,10 @@ class boa{
 				$arr = include($file);
 				foreach($arr as $k => $v){
 					$k = strtoupper($k);
-					if(is_array($v)){
-						$v = serialize($v);
-					}
 					define("$mod\\$k", $v);
 				}
 			}
 		}
-
 		self::event()->trigger('module');
 	}
 
@@ -299,14 +292,13 @@ class boa{
 		header('X-Powered-By: boaPHP (http://boasoft.top)');
 		
 		if($_SERVER['HTTP_ORIGIN'] && defined('CORS')){
-			$cors = unserialize(CORS);
-			header('Access-Control-Allow-Origin: '. $cors['origin']);
+			header('Access-Control-Allow-Origin: '. CORS['origin']);
 			header('Access-Control-Allow-Credentials: true');
-			if($cors['headers']){
-				header('Access-Control-Allow-Headers: '. $cors['headers']);
+			if(CORS['headers']){
+				header('Access-Control-Allow-Headers: '. CORS['headers']);
 			}
-			if($cors['methods']){
-				header('Access-Control-Allow-Methods: '. $cors['methods']);
+			if(CORS['methods']){
+				header('Access-Control-Allow-Methods: '. CORS['methods']);
 			}
 		}
 	}
@@ -382,7 +374,7 @@ class boa{
 		$const = strtoupper($name);
 		$key = $name . self::arr2key($cfg);
 		if(!array_key_exists($key, self::$obj)){
-			$cfg = self::merge(self::constant($const), $cfg);
+			$cfg = self::merge(self::const($const), $cfg);
 			$name = '\\boa\\'. $name;
 			self::$obj[$key] = new $name($cfg);
 		}
@@ -402,11 +394,8 @@ class boa{
 	}
 
 	private static function merge($cfg, $new = []){
-		$cfg = $cfg ? unserialize($cfg) : [];
-		if($cfg == false) $cfg = [];
 		if(is_array($new)){ // array
-			$cfg = array_merge($cfg, $new);
-			return $cfg;
+			return array_merge($cfg, $new);
 		}else if($new !== null){ // string
 			return $new;
 		}else{

@@ -12,7 +12,7 @@ class download extends base{
 		'expire' => 0,
 		'size' => 2, //MB, 0=unlimited
 		'exts' => 'jpg,png,gif',
-		'path' => '', //BS_WWW .'file/'
+		'path' => BS_WWW .'file/',
 		'name' => null
 	];
 	private $files = [];
@@ -21,10 +21,6 @@ class download extends base{
 
 	public function __construct($cfg = []){
 		parent::__construct($cfg);
-
-		if(!$this->cfg['path']){
-			$this->cfg['path'] = BS_WWW .'file/';
-		}
 
         $this->format_exts();
 

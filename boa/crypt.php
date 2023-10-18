@@ -11,9 +11,9 @@ class crypt extends base{
 		'cipher' => 'aes-128-cbc',
 		'key' => '',
 		'options' => 0,
-		'iv' => null,
-		'pubkey' => '', //BS_VAR .'crypt/pubkey.pem'
-		'prikey' => '', //BS_VAR .'crypt/prikey.pem'
+		'iv' => '',
+		'pubkey' => BS_VAR .'crypt/pubkey.pem',
+		'prikey' => BS_VAR .'crypt/prikey.pem',
 		'pripass' => '',
 		'sign_alg' => 'sha1'
 	];
@@ -23,14 +23,6 @@ class crypt extends base{
 		
 		if(!function_exists('openssl_encrypt')){
 			msg::set('boa.error.6', 'OpenSSL');
-		}
-
-		$crypt = BS_VAR .'crypt/';
-		if(!$this->cfg['pubkey']){
-			$this->cfg['pubkey'] = $crypt .'pubkey.pem';
-		}
-		if(!$this->cfg['prikey']){
-			$this->cfg['prikey'] = $crypt .'prikey.pem';
 		}
 	}
 

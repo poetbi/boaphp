@@ -12,9 +12,7 @@ class request{
 	private $act = null;
 
 	public function __construct($act = null){
-		if(!$act){
-			$act = boa::env('act');
-		}
+		if(!$act) $act = boa::env('act');
 		$this->act = $act;
 	}
 

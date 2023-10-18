@@ -10,13 +10,9 @@ class archive{
 	private $obj;
 
 	public function __construct($cfg = []){
-		if(!$cfg['driver']){
-			$cfg['driver'] = 'zip';
-		}
+		if(!$cfg['driver']) $cfg['driver'] = 'zip';
 		
-		if($cfg){
-			$this->cfg = $cfg;
-		}
+		$this->cfg = $cfg;
 	}
 	
 	public function cfg($k = null, $v = null){

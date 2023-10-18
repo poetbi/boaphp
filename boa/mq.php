@@ -10,9 +10,7 @@ class mq{
 	private $obj;
 
 	public function __construct($cfg = []){
-		if(!$cfg['driver']){
-			$cfg['driver'] = 'stomp';
-		}
+		if(!$cfg['driver']) $cfg['driver'] = 'stomp';
 
 		$driver = '\\boa\\mq\\driver\\'. $cfg['driver'];
 		$this->obj = new $driver($cfg);

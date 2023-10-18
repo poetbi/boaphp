@@ -10,9 +10,7 @@ class session{
 	private $obj;
 
 	public function __construct($cfg = []){
-		if(!$cfg['driver']){
-			$cfg['driver'] = 'file';
-		}
+		if(!$cfg['driver']) $cfg['driver'] = 'file';
 
 		$driver = '\\boa\\session\\driver\\'. $cfg['driver'];
 		$this->obj = new $driver($cfg);

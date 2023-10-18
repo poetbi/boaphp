@@ -9,11 +9,12 @@ namespace boa\mail;
 use boa\base;
 
 class driver extends base{
-	protected $cfg = [];
+	protected $cfg = [
+		'charset' => CHARSET
+	];
 	
 	public function __construct($cfg = []){
         parent::__construct($cfg);
-		$this->cfg['charset'] = CHARSET;
 	}
 
 	public function anti_spam($header){

@@ -11,7 +11,7 @@ use boa\msg;
 
 class file{
 	private $cfg = [
-        'path' => '', //BS_VAR .'cache/'
+        'path' => BS_VAR .'cache/',
         'expire' => 0,
         'prefix' => ''
     ];
@@ -19,10 +19,6 @@ class file{
 	public function __construct($cfg){
         if($cfg){
 			$this->cfg = array_merge($this->cfg, $cfg);
-		}
-		
-        if(!$this->cfg['path']){
-			$this->cfg['path'] = BS_VAR .'cache/';
 		}
 	}
 

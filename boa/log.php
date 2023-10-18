@@ -16,9 +16,7 @@ class log{
 	private $log = [];
 
 	public function __construct($cfg = []){
-		if($cfg && !$cfg['enable']){
-			return false;
-		}
+		if($cfg && !$cfg['enable']) return false;
 
 		foreach($cfg as $k => $v){
 			if(array_key_exists($k, $this->cfg)){

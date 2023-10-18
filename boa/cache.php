@@ -12,9 +12,7 @@ class cache{
 	private $ttl = 0;
 
 	public function __construct($cfg = []){
-		if(!$cfg['driver']){
-			$cfg['driver'] = 'file';
-		}
+		if(!$cfg['driver']) $cfg['driver'] = 'file';
 
 		if(array_key_exists('expire', $cfg)){
 			$this->ttl = $cfg['expire'];

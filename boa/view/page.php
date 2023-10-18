@@ -24,9 +24,7 @@ class page extends base{
 	private $var = [];
 
 	public function __construct($cfg = []){
-		if(defined('PAGE')){
-			$cfg = array_merge(unserialize(PAGE), $cfg);
-		}
+		if(defined('PAGE')) $cfg = array_merge(PAGE, $cfg);
 	}
 
 	public function get($page, $number = 10, $first = true, $last = true, $prev = false, $next = false){

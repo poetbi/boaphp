@@ -14,7 +14,7 @@ class view{
 	];
 
 	public function __construct(){
-		$cfg = unserialize(boa::constant('VIEW'));
+		$cfg = boa::const('VIEW');
 		if(is_array($cfg)){
 			$this->cfg = array_merge($this->cfg, $cfg);
 		}

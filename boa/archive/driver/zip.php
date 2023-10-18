@@ -15,8 +15,7 @@ class zip extends base{
 		'password' => null,
 		'comment' => '',
 		'filter' => null,
-		'fix_comment' => true,
-		'fix_charset' => 'GBK'
+		'charset' => 'GBK'
 	];
 	private $obj = null;
 	private $root;
@@ -32,7 +31,7 @@ class zip extends base{
 		$this->root = $source;
 		$res = $this->do_compress($source);
 		if($this->cfg['comment']){
-			if($this->cfg['fix_comment']){
+			if($this->cfg['charset']){
 				$this->fix_comment($dest);
 			}else{
 				$this->obj->setArchiveComment($this->cfg['comment']);
@@ -87,7 +86,7 @@ class zip extends base{
 
 	private function fix_comment($dest){
 		$this->close();
-		$str = \boa\util::convert($this->cfg['comment'], CHARSET, $this->cfg['fix_charset']);
+		$str = \boa\util::convert($this->cfg['comment'], CHARSET, $this->cfg['charset']);
 		$fh = fopen($dest, 'r+b');
 		fseek($fh, -2, SEEK_END);
 		$str = pack('v', strlen($str)) . $str;

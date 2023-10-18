@@ -1,6 +1,6 @@
 <?php
 return [
-	'VERSION' => '5.4',
+	'VERSION' => '5.5',
 	'NAME' => 'BoaSoft.Top',
 	'CHARSET' => 'UTF-8',
 	'SALT' => 'boa2020',

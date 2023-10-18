@@ -8,7 +8,7 @@ namespace boa;
 
 class console{
 	private $cfg = [
-		'DOCUMENT_ROOT' => '',
+		'DOCUMENT_ROOT' => BS_WWW,
 		'SERVER_PORT' => 80,
 		'SERVER_NAME' => 'localhost',
 		'HTTP_HOST' => 'localhost',
@@ -20,7 +20,7 @@ class console{
 		'QUERY_STRING' => '',
 		'PATH_INFO' => '',
 		'HTTP_COOKIE' => '', //PHPSESSID=xxx; test=1
-		'HTTP_USER_AGENT' => ''
+		'HTTP_USER_AGENT' => 'Console boaPHP/'. VERSION
 	];
 
 	private $cmd = [
@@ -100,17 +100,8 @@ class console{
 	private function init(){
 		set_time_limit(0);
 		if(defined('CONSOLE')){
-			$cfg = unserialize(CONSOLE);
-			$cfg = array_change_key_case($cfg, CASE_UPPER);
+			$cfg = array_change_key_case(CONSOLE, CASE_UPPER);
 			$this->cfg = array_merge($this->cfg, $cfg);
-		}
-
-		if(!$this->cfg['HTTP_USER_AGENT']){
-			$this->cfg['HTTP_USER_AGENT'] = 'Console boaPHP/'. VERSION;
-		}
-
-		if(!$this->cfg['DOCUMENT_ROOT']){
-			$this->cfg['DOCUMENT_ROOT'] = BS_WWW;
 		}
 
 		if($this->cfg['HTTP_COOKIE']){
