@@ -351,7 +351,7 @@ class compiler{
 
 	private function tags(){
 		$exclude = 'if|else|list';
-		$arr['CON']  = ['/'. $this->_s .'([\w\.]+?)'. $this->_e .'/', '', [$this, 'cb_con']];
+		$arr['CON']  = ['/'. $this->_s .'([A-Z_0-9]+([\w\.]*?))'. $this->_e .'/', '', [$this, 'cb_con']];
 		$arr['VAR']  = ['/'. $this->_s .'\$([\w\.\+\-]+?)'. $this->_e .'/', '', [$this, 'cb_var']];
 		$arr['LANG'] = ['/'. $this->_s .'@\s*([^\{\}]+?)'. $this->_e .'/', '', [$this, 'cb_lang']];
 		$arr['IF']   = ['/'. $this->_s .'if\s+([^\{\}]+?)'. $this->_e .'/', '', [$this, 'cb_if']];
