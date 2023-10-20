@@ -394,6 +394,7 @@ class boa{
 	}
 
 	private static function merge($cfg, $new = []){
+		if(!$cfg) $cfg = [];
 		if(is_array($new)){ // array
 			return array_merge($cfg, $new);
 		}else if($new !== null){ // string

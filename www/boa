@@ -2,7 +2,9 @@
 <?php
 define('BS_WWW', str_replace('\\', '/', dirname(__FILE__)) .'/');
 define('BS_ROOT', preg_replace('/[^\/]+\/$/', '', BS_WWW));
+require(BS_ROOT .'boa/boa.php');
 require(BS_ROOT .'boa/console.php');
+\boa\boa::init();
 $console = new \boa\console();
 $console->start();
 ?>
