@@ -65,11 +65,7 @@ class zip extends base{
 		$res = $this->obj->open($file, $flag);
 		if($res === true){
 			if($this->cfg['password']){
-				if(method_exists($this->obj, 'setPassword')){
-					$this->obj->setPassword($this->cfg['password']);
-				}else{
-					msg::set('boa.error.6', 'setPassword() [php 5.6+]');
-				}
+				$this->obj->setPassword($this->cfg['password']);
 			}
 		}else{
 			$key = boa::getkey($res, 1, 'ZipArchive', 'ER_');

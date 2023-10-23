@@ -164,19 +164,13 @@ class curl extends driver{
 	}
 	
 	private function file_data($file){
-		if(class_exists('CURLFile', false)){ //php 5.5+
-			foreach($file as $k => $v){
-				$file_name = substr(strrchr($v[0], '/'), 1);
-				$file[$k] = new \CURLFile($v[0], $v[1], $file_name);
-			}
+		foreach($file as $k => $v){
+			$file_name = substr(strrchr($v[0], '/'), 1);
+			$file[$k] = new \CURLFile($v[0], $v[1], $file_name);
+		}
 
-			if(defined('CURLOPT_SAFE_UPLOAD')){ //php 7
-				$this->option[CURLOPT_SAFE_UPLOAD] = true;
-			}
-		}else{
-			foreach($file as $k => $v){
-				$file[$k] = "@{$v[0]};type={$v[1]}";
-			}
+		if(defined('CURLOPT_SAFE_UPLOAD')){ //php 7
+			$this->option[CURLOPT_SAFE_UPLOAD] = true;
 		}
 
 		return $file;

@@ -19,14 +19,22 @@ class base{
 		switch(true){
 			case $k === null && $v === null:
 				return $this->cfg;
-				break;
 
 			case $v === null:
-				return $this->cfg[$k];
-				break;
+				$arr = explode('.', $k);
+				$cfg = $this->cfg[$arr[0]];
+				for($i = 1; $i < count($arr); $i++){
+					$cfg = $cfg[$arr[$i]];
+				}
+				return $cfg;
 
 			default:
-				$this->cfg[$k] = $v;
+				$arr = explode('.', $k);
+				if(count($arr) > 1){
+					$this->cfg[$arr[0]][$arr[1]] = $v;
+				}else{
+					$this->cfg[$k] = $v;
+				}
 		}
 	}
 
