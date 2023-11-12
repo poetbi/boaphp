@@ -269,7 +269,7 @@ class boa{
 			}
 
 			if(file_exists($file)){
-				require($file);
+				require_once($file);
 				if(class_exists($cls, false)){
 					self::$con[$key] = new $cls();
 				}else{
@@ -321,7 +321,7 @@ class boa{
 		$cls = str_replace('\\', '/', $cls);
 		$file = BS_ROOT . "$cls.php";
 		if(file_exists($file)){
-			require($file);
+			require_once($file);
 		}else{
 			msg::set('boa.error.2', $file);
 		}

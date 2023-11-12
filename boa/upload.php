@@ -87,12 +87,9 @@ class upload extends base{
 			$this->cfg('name', $save);
 		}
 		$this->files = [];
-		if($file['tmp_name']){
-			$this->files[$this->i] = $file;
-			$res = $this->upload($file);
-			return $res;
-		}
-		return false;
+		$this->files[$this->i] = $file;
+		$res = $this->upload($file);
+		return $res;
 	}
 
 	public function more($field, $save = []){
@@ -102,23 +99,20 @@ class upload extends base{
 		}
 		$this->files = [];
 
-		if($files['tmp_name']){
-			$res = true;
-			foreach($files['tmp_name'] as $k => $v){
-				$file = [
-					'tmp_name' => $v,
-					'name' => $files['name'][$k],
-					'type' => $files['type'][$k],
-					'size' => $files['size'][$k],
-					'error' => $files['error'][$k]
-				];
-				$this->i = $k;
-				$this->files[$this->i] = $file;
-				$res = $this->upload($file) && $res;
-			}
-			return $res;
+		$res = true;
+		foreach($files['tmp_name'] as $k => $v){
+			$file = [
+				'tmp_name' => $v,
+				'name' => $files['name'][$k],
+				'type' => $files['type'][$k],
+				'size' => $files['size'][$k],
+				'error' => $files['error'][$k]
+			];
+			$this->i = $k;
+			$this->files[$this->i] = $file;
+			$res = $this->upload($file) && $res;
 		}
-		return false;
+		return $res;
 	}
 
 	private function upload($file){
@@ -211,7 +205,7 @@ class upload extends base{
 		$path = $this->cfg['path'] . $name;
 		$dir = dirname($path);
 		if($dir && !file_exists($dir)){
-			mkdir($dir, 0755, true);
+			mkdir($dir, 0777, true);
 		}
 
 		return $path;
