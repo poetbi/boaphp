@@ -30,23 +30,14 @@ class view{
 	}
 
 	public function cli($str, $clean = true, $exit = true){
-		if($clean){
-			ob_clean();
-		}
-
+		if($clean) ob_clean();
 		fwrite(STDOUT, $str);
-
-		if($exit){
-			exit();
-		}
+		if($exit) exit();
 	}
 
 	public function str($str, $exit = true){
 		echo $str;
-
-		if($exit){
-			exit();
-		}
+		if($exit) exit();
 	}
 
 	public function json($data = [], $code = 0, $msg = 'OK', $return = false){

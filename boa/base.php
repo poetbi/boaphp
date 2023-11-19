@@ -35,6 +35,7 @@ class base{
 				}else{
 					$this->cfg[$k] = $v;
 				}
+				return $this;
 		}
 	}
 
@@ -43,7 +44,7 @@ class base{
 	}
 
 	public function __set($k, $v){
-		$this->cfg($k, $v);
+		return $this->cfg($k, $v);
 	}
 }
 ?>

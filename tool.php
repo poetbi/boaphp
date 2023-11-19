@@ -26,7 +26,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 		return $rule;
 	}
 
-	switch($_GET['type']){		
+	switch($_GET['type']){
 		case 'perm':
 			$group = 'temp-' . time();
 			$file = BS_WWW .'cfg/perm-'. $group .'.php';
@@ -37,7 +37,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 			$arr = explode('.', trim($_POST['act']));
 			boa::env('mod', $arr[0]);
 			boa::env('con', $arr[1]);
-			boa::env('var.act', $arr[2]);
+			boa::env('act', $arr[2]);
 
 			$res = boa::permission()->check($group, $_POST['mode']);
 			if($res){

@@ -95,9 +95,7 @@ class zip extends base{
 			while(false !== ($v = readdir($fp))){
 				if($v != '.' && $v != '..'){
 					if($this->cfg['filter']){
-						if(!preg_match($this->cfg['filter'], $v)){
-							continue;
-						}
+						if(!preg_match($this->cfg['filter'], $v)) continue;
 					}
 
 					$long = $path . $v;
