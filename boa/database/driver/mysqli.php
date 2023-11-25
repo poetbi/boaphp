@@ -115,12 +115,7 @@ class mysqli{
 	}
 
 	public function stmt_bind($stmt, $para, $type = ''){
-		foreach($para as $k => $v){
-			$para[$k] = &$para[$k];
-		}
-		$num = count($para);
-		$type .= str_repeat('s', $num);
-		$type = substr($type, 0, $num);
+		if(!$type) $type = str_repeat('s', count($para));
 		array_unshift($para, $type);
 		call_user_func_array(array($stmt, 'bind_param'), $para);
 	}

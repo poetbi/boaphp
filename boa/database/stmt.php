@@ -22,9 +22,6 @@ class stmt{
 	}
 
 	public function execute($para = [], $type = ''){
-		if(!is_array($para)){
-			$para = array($para);
-		}
 		if($para){
 			$this->para = $para;
 			$this->db->stmt_bind($this->stmt, $para, $type);
