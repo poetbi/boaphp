@@ -203,8 +203,7 @@ class validater{
 			foreach($this->temp as $k => $v){
 				$suberr = [];
 				foreach($v as $kk => $vv){
-					$mod = $this->mod($vv[0]);
-					$suberr[] = boa::lang("$mod.error.". $vv[0], $vv[1]);
+					$suberr[] = boa::lang('boa.error.'. $vv[0], $vv[1]);
 				}
 				$toperr[] = implode($join_and, $suberr);
 			}
