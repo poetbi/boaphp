@@ -9,7 +9,7 @@ namespace boa;
 class validater{
 	private $field, $label, $value;
 	private $type;
-	private $temp = [];
+	private $temp = [], $errno = [];
 	private $checker = null;
 	private $filter = null;
 
@@ -84,12 +84,8 @@ class validater{
 				}
 				if($res){
 					if(is_int($res)){
-						if($res > 999){
-							$mod = boa::env('mod');
-							msg::set("$mod.error.$res", $this->label);
-						}else{
-							msg::set("boa.error.$res", $this->label);
-						}
+						$mod = $this->mod($res);
+						msg::set("$mod.error.$res", $this->label);
 					}else{
 						msg::set('boa.error.1', '['. $this->label .']'. $res);
 					}
@@ -207,7 +203,8 @@ class validater{
 			foreach($this->temp as $k => $v){
 				$suberr = [];
 				foreach($v as $kk => $vv){
-					$suberr[] = boa::lang('boa.error.'. $vv[0], $vv[1]);
+					$mod = $this->mod($vv[0]);
+					$suberr[] = boa::lang("$mod.error.". $vv[0], $vv[1]);
 				}
 				$toperr[] = implode($join_and, $suberr);
 			}
@@ -248,6 +245,24 @@ class validater{
 			return boa::lang($key);
 		}else{
 			return $key;
+		}
+	}
+
+	private function mod($code){
+		$mod = boa::env('mod');
+		if(!$this->errno[$mod]){
+			$lng = boa::env('lng');
+			$path = BS_MOD . "$mod/language/$lng/error.php";
+			if($path){
+				$arr = include($path);
+				$this->errno[$mod] = array_keys($arr);
+			}
+			if(!$this->errno[$mod]) $this->errno[$mod] = ['!'];
+		}
+		if(in_array($code, $this->errno[$mod])){
+			return $mod;
+		}else{
+			return 'boa';
 		}
 	}
 }
