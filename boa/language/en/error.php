@@ -35,6 +35,7 @@ return [
 
 	101 => 'Database connection error: %0',
 	103 => 'Please call table() at first',
+	104 => 'Please set field() and can\'t contain *',
 
 	121 => 'Failed to download file %0',
 	122 => 'File size exceeds download limit %0',

@@ -22,12 +22,7 @@ class builder{
 	}
 
 	public function distinct($field){
-		$arr = preg_split('/(\s+AS\s+|\s+)/i', $field, 2);
-		$distinct = 'distinct('. $arr[0] .')';
-		if($arr[1]){
-			$distinct .= ' AS '. $arr[1];
-		}
-		$this->data['distinct'] = $distinct;
+		$this->data['distinct'] = "DISTINCT($field), ";
 	}
 
 	public function field($field){
@@ -88,10 +83,10 @@ class builder{
 	}
 
 	public function select($type = 0, $db){
-		if($this->data['distinct']){
-			unset($this->data['field']);
-		}else{
-			if(!$this->data['field']){
+		if(!$this->data['field']){
+			if($this->data['distinct']){
+				msg::set('boa.error.104');
+			}else{
 				$this->data['field'] = '*';
 			}
 		}
