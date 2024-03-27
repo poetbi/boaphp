@@ -93,8 +93,12 @@ class mysqli{
 			$sql = preg_replace('/ order by (.+) (asc|desc)/i', '', $sql);
 		}
 		$res = $this->link->query($sql);
-		$rs = $res->fetch_row();
-		$num = intval(current($rs));
+		if($res){
+			$rs = $res->fetch_row();
+			$num = intval(current($rs));
+		}else{
+			$num = 0;
+		}
 		return $num;
 	}
 
