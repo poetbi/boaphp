@@ -166,10 +166,7 @@ class boa{
 	}
 
 	public static function model($key){
-		$arr = explode('.', $key, 2);
-		$max = count($arr);
-		$mod = $max == 2 ? $arr[0] : self::env('mod');
-		$cls = $arr[$max - 1];
+		list($mod, $cls) = self::split($key);
 		$cls = "\\mod\\$mod\\model\\$cls";
 		return new $cls();
 	}
@@ -206,7 +203,7 @@ class boa{
 		return self::__callStatic('database', $new);
 	}
 
-	private static function conf(){
+	public static function conf(){
 		$config = BS_WWW .'cfg/config.php';
 		if(file_exists($config)){
 			$arr = include($config);
@@ -241,7 +238,7 @@ class boa{
 		ini_set('date.timezone', self::lang('boa.locale.timezone'));
 	}
 
-	private static function mod($mod){
+	public static function mod($mod){
 		if(!in_array($mod, self::$mod)){
 			self::$mod[] = $mod;
 			$file = BS_MOD . "$mod/config.php";
@@ -256,9 +253,13 @@ class boa{
 		self::event()->trigger('module');
 	}
 
-	private static function con(){
-		$mod = self::env('mod');
-		$con = self::env('con');
+	public static function con($key = null){
+		if($key){
+			list($mod, $con) = self::split($key);
+		}else{
+			$mod = self::env('mod');
+			$con = self::env('con');
+		}
 		$key = "$mod.$con";
 		if(!array_key_exists($key, self::$con)){
 			$_file = $file = BS_MOD ."$mod/controller/$con.php";
@@ -287,7 +288,7 @@ class boa{
 		return self::$con[$key];
 	}
 
-	private static function head(){
+	public static function head(){
 		header('Content-type: text/html; charset='. CHARSET);
 		header('X-Powered-By: boaPHP (http://boasoft.top)');
 		
@@ -304,10 +305,7 @@ class boa{
 	}
 
 	public static function lib($key, $args = null){
-		$arr = explode('.', $key, 2);
-		$max = count($arr);
-		$mod = $max == 2 ? $arr[0] : self::env('mod');
-		$cls = $arr[$max - 1];
+		list($mod, $cls) = self::split($key);
 		$file = BS_MOD ."$mod/library/$cls.php";
 		if(file_exists($file)){
 			$cls = "\\mod\\$mod\\library\\$cls";
@@ -381,7 +379,7 @@ class boa{
 		return self::$obj[$key];
 	}
 
-	private static function type(){
+	public static function type(){
 		$name = defined('MSG_TYPE_VAR') ? MSG_TYPE_VAR : '_msg';
 		$type = $_REQUEST[$name];
 		if($type){
@@ -391,6 +389,14 @@ class boa{
 				msg::set_type(MSG_TYPE);
 			}
 		}
+	}
+	
+	private static function split($key){
+		if(strpos($key, '.') === false){
+			$key = self::env('mod') .'.'. $key;
+		}
+		$arr = explode('.', $key, 2);
+		return $arr;
 	}
 
 	private static function merge($cfg, $new = []){
