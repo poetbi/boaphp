@@ -15,7 +15,7 @@ class pdo{
 		'charset' => 'utf8',
 		'persist' => false,
 		'option' => [],
-		'host' => '127.0.0.1',
+		'host' => 'localhost',
 		'port' => 3306,
 		'name' => '',
 		'user' => null,
@@ -160,7 +160,10 @@ class pdo{
 			'odbc' => 'Driver={Microsoft Access Driver (*.mdb)};Dbq={name}',
 			'firebird' => 'dbname={host}/{port}:{name}',
 			'cubrid' => 'host={host};port={port};dbname={name}',
-			'4D' => 'host={host}'
+			'mssql' => 'mssql:host={host};dbname={name}',
+			'sybase' => 'sybase:host={host};dbname={name}',
+			'dblib' => 'dblib:host={host};dbname={name}',
+			'informix' => 'informix:DSN={name}'
 		];
 		$socket = [
 			'mysql' => 'unix_socket={host};dbname={name}',
@@ -170,10 +173,9 @@ class pdo{
 			'sqlite' => ':memory:',
 			'sqlite2' => ':memory:',
 			'odbc' => '{name}',
-			'firebird' => 'dbname={name}',
-			'4D' => 'host={host}'
+			'firebird' => 'dbname={name}'
 		];
-		if($this->cfg['port'] == 0){
+		if($this->cfg['port'] == 0 && array_key_exists($type, $socket)){
 			$dsn = $socket[$type];
 		}else{
 			$dsn = $tcp[$type];
@@ -184,7 +186,7 @@ class pdo{
 				$dsn = str_replace('{'. $key .'}', $this->cfg[$key], $dsn);
 			}
 			$dsn = $type .':'. $dsn;
-			if($this->cfg['charset']){
+			if($this->cfg['charset'] && in_array($type, ['mysql', 'oci', 'firebird', 'mssql', 'sybase', 'dblib'])){
 				$dsn .= ';charset='. $this->cfg['charset'];
 			}
 		}
