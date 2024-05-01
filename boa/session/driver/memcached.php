@@ -8,7 +8,7 @@ namespace boa\session\driver;
 
 class memcached{
 	private $cfg = [
-		'server' => ['127.0.0.1', 11211]
+		'server' => ['localhost', 11211]
     ];
 
 	public function __construct($cfg){

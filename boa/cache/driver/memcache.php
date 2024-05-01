@@ -13,7 +13,7 @@ class memcache{
 		'compress' => false,
         'expire' => 0,
         'prefix' => '',
-		'server' => ['127.0.0.1', 11211, true, 1, 1]
+		'server' => ['localhost', 11211, true, 1, 1]
     ];
 
 	public function __construct($cfg){

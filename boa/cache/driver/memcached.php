@@ -17,7 +17,7 @@ class memcached{
 		'timeout' => 0,
         'user' => '',
         'pass' => '',
-		'server' => ['127.0.0.1', 11211, 1],
+		'server' => ['localhost', 11211, 1],
         'option' => []
     ];
 
@@ -65,10 +65,17 @@ class memcached{
 	}
 
 	public function get($name){
-		return $this->obj->get($this->cfg['prefix'] . $name);
+		$res = $this->obj->get($this->cfg['prefix'] . $name);
+		if(substr($res, 0, 1) === chr(8)){
+			$res = unserialize(substr($res, 1));
+		}
+		return $res;
 	}
 
 	public function set($name, $val, $ttl = 0){
+		if(!is_scalar($val)){
+			$val = chr(8) . serialize($val);
+		}
 		if($ttl > 0) $ttl = time() + $ttl;
 		return $this->obj->set($this->cfg['prefix'] . $name, $val, $ttl);
 	}

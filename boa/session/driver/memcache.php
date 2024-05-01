@@ -8,7 +8,7 @@ namespace boa\session\driver;
 
 class memcache{
 	private $cfg = [
-		'server' => ['127.0.0.1', 11211],
+		'server' => ['localhost', 11211],
 		'option' => []
     ];
 
