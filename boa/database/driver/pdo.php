@@ -150,30 +150,32 @@ class pdo{
 
 	private function dsn($type){
 		$tcp = [
-			'mysql' => 'host={host};port={port};dbname={name}',
-			'sqlsrv' => 'Server={host},{port};Database={name}',
-			'oci' => 'dbname=//{host}:{port}/{name}',
-			'pgsql' => 'host={host};port={port};dbname={name}',
-			'ibm' => 'DRIVER={IBM DB2 ODBC DRIVER};DATABASE={name};HOSTNAME={host};PORT={port};PROTOCOL=TCPIP',
-			'sqlite' => '{name}',
-			'sqlite2' => '{name}',
-			'odbc' => 'Driver={Microsoft Access Driver (*.mdb)};Dbq={name}',
-			'firebird' => 'dbname={host}/{port}:{name}',
-			'cubrid' => 'host={host};port={port};dbname={name}',
+			'mysql' => 'mysql:host={host};port={port};dbname={name}',
+			'sqlsrv' => 'sqlsrv:Server={host},{port};Database={name}',
+			'oci' => 'oci:dbname=//{host}:{port}/{name}',
+			'pgsql' => 'pgsql:host={host};port={port};dbname={name}',
+			'ibm' => 'ibm:DRIVER={IBM DB2 ODBC DRIVER};DATABASE={name};HOSTNAME={host};PORT={port};PROTOCOL=TCPIP',
+			'sqlite' => 'sqlite:{name}',
+			'sqlite2' => 'sqlite2:{name}',
+			'access' => 'odbc:Driver={Microsoft Access Driver (*.mdb)};Dbq={name}',
+			'excel' => 'odbc:Driver={Microsoft Excel Driver (*.xls, *.xlsx, *.xlsm, *.xlsb)};Dbq={name};Readonly=0',
+			'firebird' => 'firebird:dbname={host}/{port}:{name}',
+			'cubrid' => 'cubrid:host={host};port={port};dbname={name}',
 			'mssql' => 'mssql:host={host};dbname={name}',
 			'sybase' => 'sybase:host={host};dbname={name}',
 			'dblib' => 'dblib:host={host};dbname={name}',
 			'informix' => 'informix:DSN={name}'
 		];
 		$socket = [
-			'mysql' => 'unix_socket={host};dbname={name}',
-			'sqlsrv' => 'Server={host};Database={name}',
-			'oci' => 'dbname={name}',
-			'ibm' => 'DSN={name}',
-			'sqlite' => ':memory:',
-			'sqlite2' => ':memory:',
-			'odbc' => '{name}',
-			'firebird' => 'dbname={name}'
+			'mysql' => 'mysql:unix_socket={host};dbname={name}',
+			'sqlsrv' => 'sqlsrv:Server={host};Database={name}',
+			'oci' => 'oci:dbname={name}',
+			'ibm' => 'ibm:DSN={name}',
+			'sqlite' => 'sqlite::memory:',
+			'sqlite2' => 'sqlite2::memory:',
+			'access' => 'odbc:{name}',
+			'excel' => 'odbc:{name}',
+			'firebird' => 'firebird:dbname={name}'
 		];
 		if($this->cfg['port'] == 0 && array_key_exists($type, $socket)){
 			$dsn = $socket[$type];
@@ -185,7 +187,6 @@ class pdo{
 			foreach($arr as $key){
 				$dsn = str_replace('{'. $key .'}', $this->cfg[$key], $dsn);
 			}
-			$dsn = $type .':'. $dsn;
 			if($this->cfg['charset'] && in_array($type, ['mysql', 'oci', 'firebird', 'mssql', 'sybase', 'dblib'])){
 				$dsn .= ';charset='. $this->cfg['charset'];
 			}

@@ -83,7 +83,11 @@ class image{
 			$cfg['color'] = $this->obj->cfg('wm_color');
 		}
 		if(!$cfg['font']){
-			$cfg['font'] = $this->obj->cfg('wm_font');
+			$cfg['font'] = $this->obj->res_path('wm_font');
+		}else{
+			if(strpos($cfg['font'], '/') === false){
+				$cfg['font'] = BS_VAR .'image/'. $cfg['font'];
+			}
 		}
 		if(!$cfg['size']){
 			$cfg['size'] = $this->obj->cfg('wm_size');

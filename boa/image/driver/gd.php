@@ -35,14 +35,14 @@ class gd extends driver{
 		if($type == 1){
 			$arr = $this->rgb2hex($this->cfg['wm_color']);
 			$color = imagecolorallocate($this->im, $arr['red'], $arr['green'], $arr['blue']);
-			$font = BS_VAR .'image/'. $this->cfg['wm_font'];
+			$font = $this->res_path('wm_font');
 			if(file_exists($font)){
 				imagettftext($this->im, $this->cfg['wm_size'], 0, $x, $y + $box['h'], $color, $font, $this->cfg['wm_text']);
 			}else{
 				imagestring($this->im, 5, $x, $y, $this->cfg['wm_text'], $color);
 			}
 		}else{
-			$logo = BS_VAR .'image/'. $this->cfg['wm_logo'];
+			$logo = $this->res_path('wm_logo');
 			if(file_exists($logo)){
 				$create = $this->fun_create($box['t']);
 				$imi = $create($logo);
@@ -138,8 +138,7 @@ class gd extends driver{
 	public function text($text, $cfg){
 		$arr = $this->rgb2hex($cfg['color']);
 		$color = imagecolorallocate($this->im, $arr['red'], $arr['green'], $arr['blue']);
-		$font = BS_VAR .'image/'. $cfg['font'];
-		imagettftext($this->im, $cfg['size'], $cfg['angle'], $cfg['x'], $cfg['y'], $color, $font, $text);
+		imagettftext($this->im, $cfg['size'], $cfg['angle'], $cfg['x'], $cfg['y'], $color, $cfg['font'], $text);
 	}
 
 	public function save($to, $quality){

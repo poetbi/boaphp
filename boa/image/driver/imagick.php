@@ -33,7 +33,7 @@ class imagick extends driver{
 
 		if($type == 1){
 			$draw = new \ImagickDraw();
-			$draw->setFont(BS_VAR .'image/'. $this->cfg['wm_font']);
+			$draw->setFont($this->res_path('wm_font'));
 			$draw->setFontSize($this->cfg['wm_size']);
 			$draw->setFillColor($this->cfg['wm_color']);
 			if($this->type == IMAGETYPE_GIF){
@@ -44,7 +44,7 @@ class imagick extends driver{
 				$this->im->annotateImage($draw, $x, $y, 0, $this->cfg['wm_text']);
 			}
 		}else{
-			$wm = new \Imagick(BS_VAR .'image/'. $this->cfg['wm_logo']);
+			$wm = new \Imagick($this->res_path('wm_logo'));
 			$wm->setImageOpacity($this->cfg['wm_alpha']);
 			if($this->type == IMAGETYPE_GIF){
 				foreach($this->im as $frame){
@@ -97,7 +97,7 @@ class imagick extends driver{
 	public function text($text, $cfg){
 		$draw = new \ImagickDraw();
         $draw->setFillColor($cfg['color']);
-        $draw->setFont(BS_VAR .'image/'. $cfg['font']);
+        $draw->setFont($cfg['font']);
         $draw->setFontSize($cfg['size']);
 		$this->im->annotateImage($draw, $cfg['x'], $cfg['y'], $cfg['angle'], $text);
 	}

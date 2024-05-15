@@ -52,7 +52,7 @@ class stmt{
 	private function sql(){
 		$sql = $this->sql;
 		foreach($this->para as $v){
-			$v = "'". addslashes($v) ."'";
+			$v = is_null($v) ? 'NULL' : "'". addslashes($v) ."'";
 			$sql = preg_replace('/\?/', $v, $sql, 1);
 		}
 		return $sql;

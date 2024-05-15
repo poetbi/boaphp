@@ -77,7 +77,7 @@ class driver extends base{
 
 	protected function get_box(){
 		if($this->cfg['wm_type'] == 1){
-			$font = BS_VAR .'image/'. $this->cfg['wm_font'];
+			$font = $this->res_path('wm_font');
 			if(file_exists($font)){
 				$arr = imagettfbbox($this->cfg['wm_size'], 0, $font, $this->cfg['wm_text']);
 				$box_w = $arr[2] - $arr[0];
@@ -87,7 +87,7 @@ class driver extends base{
 				$box_h = imagefontheight(5);
 			}
 		}else{
-			$logo = BS_VAR .'image/'. $this->cfg['wm_logo'];
+			$logo = $this->res_path('wm_logo');
 			$info = getimagesize($logo);
 			$box_w = $info[0];
 			$box_h = $info[1];
@@ -172,6 +172,14 @@ class driver extends base{
 			'blue'  => $hex[4] * 16 + $hex[5]
 		];
 		return $arr;
+	}
+	
+	public function res_path($key){
+		if(strpos($this->cfg[$key], '/') === false){
+			return BS_VAR .'image/'. $this->cfg[$key];
+		}else{
+			return $this->cfg[$key];
+		}
 	}
 }
 ?>

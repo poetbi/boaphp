@@ -13,7 +13,7 @@ class builder{
 	private $select = 'SELECT %distinct%%field% FROM %table%%force%%join%%where%%group%%having%%order%%limit%%union%%lock%';
 	private $insert = 'INSERT INTO %table%%fields% VALUES %values%';
 	private $update = 'UPDATE %table% SET %fields%%where%';
-	private $delete = 'DELETE FROM %table%%where%';
+	private $delete = 'DELETE FROM %table%%join%%where%%order%%limit%';
 	private $data = [];
 	private $getsql = false;
 
@@ -111,7 +111,11 @@ class builder{
 		$this->data['fields'] = ' ('. implode(', ', array_keys($data)) .')';
 		$values = array_values($data);
 		foreach($values as $k => $v){
-			$values[$k] = "'". addslashes($v) ."'";
+			if($v === null){
+				$values[$k] = 'NULL';
+			}else{
+				$values[$k] = "'". addslashes($v) ."'";
+			}
 		}
 		$this->data['values'] = '('. implode(', ', $values) .')';
 

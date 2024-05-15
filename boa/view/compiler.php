@@ -21,7 +21,7 @@ class compiler{
 	];
 	
 	public function __construct(){
-		$this->tag = '/'. chr(8) .'[a-f0-9]{16}'. chr(8) .'/';
+		$this->tag = '/'. chr(8) .'\d+'. chr(8) .'/';
 		$cfg = boa::const('COMPILER');
 		if(is_array($cfg)){
 			$this->cfg = array_merge($this->cfg, $cfg);
@@ -99,7 +99,7 @@ class compiler{
 				$num = preg_match_all($tag[0], $this->html, $a);
 				if($num){
 					foreach($a[0] as $s){
-						$x = chr(8) . substr(md5($s . ++$j), 8, 16) . chr(8);
+						$x = chr(8) . ++$j . chr(8);
 						$this->temp[$x] = [
 							'str' => $s,
 							'tag' => $i,
@@ -124,7 +124,7 @@ class compiler{
 			foreach($this->tree[$i] as $k){
 				$b = $this->temp[$k];
 				$r = $this->tags[$b['tag']];
-				
+
 				if($i >= 1){
 					$num = preg_match_all($this->tag, $b['str'], $c);
 					if($num){
@@ -361,7 +361,7 @@ class compiler{
 		$arr['LIST'] = ['/'. $this->_s .'list\s+([^\{\}]+?)'. $this->_e .'/', '', [$this, 'cb_list']];
 		$arr['-LIST']= ['/'. $this->_s .'\/list'. $this->_e .'/', '<?php } ?>', '}'];
 		$arr['BOA']  = ['/'. $this->_s .'\$(\w+)\s+([^\{\}]+?)'. $this->_e .'/', '', [$this, 'cb_boa']];
-		$arr['FUN']  = ['/'. $this->_s .'((?!'. $exclude .')\w+(?!\s*:))(\s+[^\{\}]+?)?'. $this->_e .'/', '', [$this, 'cb_fun']]; //excludes template tags and javascript object
+		$arr['FUN']  = ['/'. $this->_s .'((?!'. $exclude .')\w+(?!\s*:))(\s+[^\{\}]+?)?'. $this->_e .'/', '', [$this, 'cb_fun']];
 		$this->tags = $arr;
 	}
 }

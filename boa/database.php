@@ -160,11 +160,8 @@ class database{
 		$sql = $this->prefix($sql);
 		if(is_array($args)){
 			foreach($args as $arg){
-				if(is_null($arg)){
-					$sql = preg_replace('/\?/', 'NULL', $sql, 1);
-				}else{
-					$sql = preg_replace('/\?/', "'". addslashes($arg) ."'", $sql, 1);
-				}
+				$arg = is_null($arg) ? 'NULL' : "'". addslashes($arg) ."'";
+				$sql = preg_replace('/\?/', $arg, $sql, 1);
 			}
 		}
 		return $sql;
