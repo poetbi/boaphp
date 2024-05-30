@@ -13,7 +13,6 @@ class stmt{
 	private $db;
 	private $stmt;
 	private $sql;
-	private $para = [];
 
 	public function __construct($sql, $db){
 		$this->db = $db;
@@ -21,41 +20,25 @@ class stmt{
 		$this->stmt = $this->db->prepare($sql);
 	}
 
-	public function execute($para = [], $type = ''){
-		if($para){
-			$this->para = $para;
-			$this->db->stmt_bind($this->stmt, $para, $type);
-		}
-		$res = $this->stmt->execute();
-
-		$sql = $this->sql();
-		boa::log()->set('info', "[stmt]$sql");
-		return $res;
+	public function execute($para, $type = ''){
+		$this->db->stmt_bind($para, $type);
+		return $this->stmt->execute();
 	}
 
 	public function one(){
-		return $this->db->stmt_one($this->stmt);
+		return $this->db->stmt_one();
 	}
 
 	public function all(){
-		return $this->db->stmt_all($this->stmt);
+		return $this->db->stmt_all();
 	}
 
 	public function lastid(){
-		return $this->db->stmt_lastid($this->stmt);
+		return $this->db->stmt_lastid();
 	}
 
 	public function affected(){
-		return $this->db->stmt_affected($this->stmt);
-	}
-
-	private function sql(){
-		$sql = $this->sql;
-		foreach($this->para as $v){
-			$v = is_null($v) ? 'NULL' : "'". addslashes($v) ."'";
-			$sql = preg_replace('/\?/', $v, $sql, 1);
-		}
-		return $sql;
+		return $this->db->stmt_affected();
 	}
 }
 ?>

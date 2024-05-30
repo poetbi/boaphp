@@ -199,7 +199,7 @@ class compiler{
 		}
 		return $str;
 	}
-	
+
 	private function cb_elseif($m){
 		$str = $this->cb_sub_if($m[1]);
 		$str = "}else if($str){";
@@ -313,28 +313,23 @@ class compiler{
 
 	private function var_format($v){
 		$v = str_replace('\\s', ' ', $v);
-		if(!$v){
-			return '';
-		}
-		
-		$is_arr = preg_match('/^(array\(.+?\)|\[.+?\])$/i', $v);
-		if($is_arr){
-			return $v;
-		}
-		
-		$is_num = preg_match('/^([\-]?\d+[\.\d]*|true|false)$/i', $v);
-		if($is_num){
-			return $v;
-		}
-		
-		$is_var = preg_match($this->tag, $v);
-		if($is_var){
-			return $v;
-		}
+		if(!$v) return '';
 
-		$v = trim($v, '"\' ');
-		$v = str_replace("'", "\'", $v);
-		return "'$v'";
+		switch(true){
+			case preg_match('/^(array\(.+?\)|\[.+?\])$/i', $v):
+				return $v;
+
+			case preg_match('/^([\-]?\d+[\.\d]*|true|false)$/i', $v):
+				return $v;
+
+			case preg_match($this->tag, $v):
+				return $v;
+
+			default:
+				$v = trim($v, '"\' ');
+				$v = str_replace("'", "\'", $v);
+				return "'$v'";
+		}
 	}
 
 	private function arr_format($v){
@@ -343,16 +338,19 @@ class compiler{
 		$max = count($arr);
 		for($i = 1; $i < $max; $i++){
 			$key = $arr[$i];
-			$s = preg_match('/^([\-]?\d+)$/', $key) ? '': "'";
-			$v .= "[$s". $key ."$s]";
+			if(preg_match('/^([\-]?\d+)$/', $key) || preg_match($this->tag, $key)){
+				$v .= "[$key]";
+			}else{
+				$v .= "['$key']";
+			}
 		}
 		return $v;
 	}
 
 	private function tags(){
 		$exclude = 'if|else|list';
-		$arr['CON']  = ['/'. $this->_s .'([A-Z_0-9]+([\w\.]*?))'. $this->_e .'/', '', [$this, 'cb_con']];
-		$arr['VAR']  = ['/'. $this->_s .'\$([\w\.\+\-]+?)'. $this->_e .'/', '', [$this, 'cb_var']];
+		$arr['CON']  = ['/'. $this->_s .'([A-Z_0-9]+(['. chr(8) .'\w\.]*?))'. $this->_e .'/', '', [$this, 'cb_con']];
+		$arr['VAR']  = ['/'. $this->_s .'\$(['. chr(8) .'\w\.\+\-]+?)'. $this->_e .'/', '', [$this, 'cb_var']];
 		$arr['LANG'] = ['/'. $this->_s .'@\s*([^\{\}]+?)'. $this->_e .'/', '', [$this, 'cb_lang']];
 		$arr['IF']   = ['/'. $this->_s .'if\s+([^\{\}]+?)'. $this->_e .'/', '', [$this, 'cb_if']];
 		$arr['ELIF'] = ['/'. $this->_s .'else\s*if\s+([^\{\}]+?)'. $this->_e .'/', '', [$this, 'cb_elseif']];

@@ -23,6 +23,7 @@ class mysqli{
 	private $link;
 	private $mode = \MYSQLI_ASSOC;
 	private $sql;
+	private $stmt;
 
 	public function __construct($cfg){
         if($cfg){
@@ -115,31 +116,32 @@ class mysqli{
 	}
 	
 	public function prepare($sql){
-		return $this->link->prepare($sql);
+		$this->stmt = $this->link->prepare($sql);
+		return $this->stmt;
 	}
 
-	public function stmt_bind($stmt, $para, $type = ''){
+	public function stmt_bind($para, $type = ''){
 		if(!$type) $type = str_repeat('s', count($para));
 		array_unshift($para, $type);
-		call_user_func_array(array($stmt, 'bind_param'), $para);
+		call_user_func_array(array($this->stmt, 'bind_param'), $para);
 	}
 
-	public function stmt_one($stmt){
-		$res = $stmt->get_result();
+	public function stmt_one(){
+		$res = $this->stmt->get_result();
 		return $res->fetch_assoc();
 	}
 	
-	public function stmt_all($stmt){
-		$res = $stmt->get_result();
+	public function stmt_all(){
+		$res = $this->stmt->get_result();
 		return $res->fetch_all($this->mode);
 	}
 	
-	public function stmt_lastid($stmt){
-		return $stmt->insert_id;
+	public function stmt_lastid(){
+		return $this->stmt->insert_id;
 	}
 	
-	public function stmt_affected($stmt){
-		return $stmt->affected_rows;
+	public function stmt_affected(){
+		return $this->stmt->affected_rows;
 	}
 }
 ?>

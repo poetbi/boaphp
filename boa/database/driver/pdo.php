@@ -31,6 +31,7 @@ class pdo{
 	];
 	private $mode = \PDO::FETCH_ASSOC;
 	private $sql;
+	private $stmt;
 
 	public function __construct($cfg){
 		if($cfg){
@@ -106,46 +107,47 @@ class pdo{
 	}
 
 	public function prepare($sql){
-		return $this->link->prepare($sql);
+		$this->stmt = $this->link->prepare($sql);
+		return $this->stmt;
 	}
-
-	public function stmt_bind($stmt, $para, $type = ''){
+	
+	public function stmt_bind($para, $type = ''){
 		$i = 0;
 		foreach($para as $k => $v){
 			$key = $k === $i ? $k+1 : ":$k";
 			if(is_array($v)){
 				if(count($v) > 2){
-					$stmt->bindParam($key, $para[$k][0], $v[1], $v[2]);
+					$this->stmt->bindParam($key, $para[$k][0], $v[1], $v[2]);
 				}else{
-					$stmt->bindParam($key, $para[$k][0], $v[1]);
+					$this->stmt->bindParam($key, $para[$k][0], $v[1]);
 				}
 			}else{
 				if($type){
 					$t = substr($type, $i, 1);
 					$t = $this->type[$t];
-					$stmt->bindParam($key, $para[$k], $t);
+					$this->stmt->bindParam($key, $para[$k], $t);
 				}else{
-					$stmt->bindParam($key, $para[$k]);
+					$this->stmt->bindParam($key, $para[$k]);
 				}
 			}
 			$i++;
 		}
 	}
 
-	public function stmt_one($stmt){
-		return $stmt->fetch();
+	public function stmt_one(){
+		return $this->stmt->fetch();
 	}
 
-	public function stmt_all($stmt){
-		return $stmt->fetchAll();
+	public function stmt_all(){
+		return $this->stmt->fetchAll();
 	}
 
-	public function stmt_lastid($stmt){
+	public function stmt_lastid(){
 		return $this->link->lastInsertId();
 	}
 
-	public function stmt_affected($stmt){
-		return $stmt->rowCount();
+	public function stmt_affected(){
+		return $this->stmt->rowCount();
 	}
 
 	private function dsn($type){
