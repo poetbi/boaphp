@@ -148,9 +148,7 @@ class compiler{
 
 	private function cb_var($m){
 		$str = '$'. $this->arr_format($m[1]);
-		if($this->res == 1){
-			$str = "<?php echo $str; ?>";
-		}
+		if($this->res == 1) $str = "<?php echo $str; ?>";
 		return $str;
 	}
 
@@ -164,9 +162,7 @@ class compiler{
 		}else{
 			return '{'. $m[1] .'}';
 		}
-		if($this->res == 1){
-			$str = "<?php echo $str; ?>";
-		}
+		if($this->res == 1) $str = "<?php echo $str; ?>";
 		return $str;
 	}
 
@@ -174,19 +170,15 @@ class compiler{
 		$arr = preg_split('/\s+/', $m[1]);
 		if($this->cfg['static'] && !preg_match($this->tag, $m[1])){
 			$str = call_user_func_array(['\\boa\\boa', 'lang'], $arr);
-			if($this->res != 1){
-				$str = "'". str_replace("'", "\'", $str) ."'";
-			}
+			if($this->res != 1) $str = "'". str_replace("'", "\'", $str) ."'";
 		}else{
 			$max = count($arr);
-			$str = "boa::lang('". $arr[0] ."'";
+			$str = "boa::lang(\"". $arr[0] ."\"";
 			for($i = 1; $i < $max; $i++){
 				$str .= ','. $this->var_format($arr[$i]);
 			}
 			$str .= ")";
-			if($this->res == 1){
-				$str = "<?php echo $str; ?>";
-			}
+			if($this->res == 1) $str = "<?php echo $str; ?>";
 		}
 		return $str;
 	}
@@ -194,18 +186,14 @@ class compiler{
 	private function cb_if($m){
 		$str = $this->cb_sub_if($m[1]);
 		$str = "if($str){";
-		if($this->res == 1){
-			$str = "<?php $str ?>";
-		}
+		if($this->res == 1) $str = "<?php $str ?>";
 		return $str;
 	}
 
 	private function cb_elseif($m){
 		$str = $this->cb_sub_if($m[1]);
 		$str = "}else if($str){";
-		if($this->res == 1){
-			$str = "<?php $str ?>";
-		}
+		if($this->res == 1) $str = "<?php $str ?>";
 		return $str;
 	}
 	
@@ -244,9 +232,7 @@ class compiler{
 				$c = '$_';
 		}
 		$str = "foreach($a as $b$c){";
-		if($this->res == 1){
-			$str = "<?php $str ?>";
-		}
+		if($this->res == 1) $str = "<?php $str ?>";
 		return $str;
 	}
 
@@ -269,9 +255,7 @@ class compiler{
 			}
 		}
 		$str = "$fun(". implode(', ', $args) .")";
-		if($this->res == 1){
-			$str = "<?php echo $str ?>";
-		}
+		if($this->res == 1) $str = "<?php echo $str ?>";
 		return $str;
 	}
 

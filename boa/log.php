@@ -63,25 +63,27 @@ class log{
 
 	public function save(){
 		if($this->cfg['enable']){
-			$arr = boa::info();
-			$info['time'] = date('Y-m-d H:i:s', $arr['time_start']);
-			$info['from'] = $_SERVER['REMOTE_ADDR'] .':'. $_SERVER['REMOTE_PORT'];
-			$info['type'] = $_SERVER['REQUEST_METHOD'];
-			$info['uri']  = $_SERVER['REQUEST_URI'];
-			$info['use_mem'] = round(($arr['mem_end'] - $arr['mem_start']) / 1024, 2);
-			$info['use_time'] = round($arr['time_end'] - $arr['time_start'], 4);
+			if($this->log || strpos($this->cfg['type'], 'info') !== false){
+				$arr = boa::info();
+				$info['time'] = date('Y-m-d H:i:s', $arr['time_start']);
+				$info['from'] = $_SERVER['REMOTE_ADDR'] .':'. $_SERVER['REMOTE_PORT'];
+				$info['type'] = $_SERVER['REQUEST_METHOD'];
+				$info['uri']  = $_SERVER['REQUEST_URI'];
+				$info['use_mem'] = round(($arr['mem_end'] - $arr['mem_start']) / 1024, 2);
+				$info['use_time'] = round($arr['time_end'] - $arr['time_start'], 4);
 
-			if(PHP_SAPI != 'cli'){
-				if(strpos($this->cfg['type'], ',header,') !== false){
-					array_unshift($this->log, [
-						'time' => $arr['time_start'],
-						'type' => 'header',
-						'msg' => getallheaders()
-					]);
+				if(PHP_SAPI != 'cli'){
+					if(strpos($this->cfg['type'], 'header') !== false){
+						array_unshift($this->log, [
+							'time' => $arr['time_start'],
+							'type' => 'header',
+							'msg' => getallheaders()
+						]);
+					}
 				}
-			}
 
-			$this->obj->save($info, $this->log);
+				$this->obj->save($info, $this->log);
+			}
 		}
 		$this->log = [];
 	}
