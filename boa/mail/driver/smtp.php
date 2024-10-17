@@ -16,15 +16,15 @@ class smtp extends driver{
 			'host' => '',
 			'port' => 25,
 			'user' => '',
-			'pass' => '',
-			'helo' => 'BOA'
+			'pass' => ''
 		],
 		'from' => '',
 		'reply' => '',
 		'to' => '',
 		'cc' => [],
 		'bcc' => [],
-		'charset' => '',
+		'charset' => CHARSET,
+		'encode' => 'base64',
 		'priority' => 3,
 		'content_type' => 'text/html',
 		'eol' => "\r\n",
@@ -43,7 +43,7 @@ class smtp extends driver{
 			return 82;
 		}
 
-		$this->smtp_putcmd('HELO ', $this->cfg['smtp']['helo']);
+		$this->smtp_putcmd('HELO ', 'BOA');
 
 		if($this->cfg['smtp']['user'] && $this->cfg['smtp']['pass']){
 			$res = $this->smtp_putcmd('AUTH LOGIN ', base64_encode($this->cfg['smtp']['user']));
@@ -54,18 +54,18 @@ class smtp extends driver{
 			}
 		}
 
-		$this->smtp_putcmd('MAIL ', 'FROM:<'. $this->cfg['from_addr'] .'>');
+		$res = $this->smtp_putcmd('MAIL ', 'FROM:<'. $this->cfg['from_addr'] .'>');
 
 		$arr = array_merge([$this->cfg['to']], $this->cfg['cc'], $this->cfg['bcc']);
 		foreach($arr as $v){
 			list($addr, $name) = explode(' ', $v, 2);
-			$this->smtp_putcmd('RCPT ', "TO:<$addr>");
+			$res = $this->smtp_putcmd('RCPT ', "TO:<$addr>");
 		}
 
-		$this->smtp_putcmd('DATA ');
-		$res = fwrite($this->socket, $this->header($subject) . base64_encode($message));
-		fwrite($this->socket, $this->cfg['eol'] .'.'. $this->cfg['eol']);
-		fwrite($this->socket, 'QUIT'. $this->cfg['eol']);
+		$this->smtp_putcmd('DATA');
+		$res = fwrite($this->socket, $this->header($subject) . $this->encode($message));
+		$this->smtp_putcmd('.');
+		$this->smtp_putcmd('QUIT');
 		fclose($this->socket);
 
 		if(!$res){
@@ -88,8 +88,8 @@ class smtp extends driver{
 	}
 
 	private function smtp_res(){
-		$response = trim(fgets($this->socket, 512));
-		return preg_match('/^[23]/', $response);
+		$res = trim(fgets($this->socket, 512));
+		return preg_match('/^[23]/', $res);
 	}
 
 	private function smtp_putcmd($cmd, $arg = ''){
@@ -118,12 +118,12 @@ class smtp extends driver{
 				$str .= "$k: $v". $this->cfg['eol'];
 			}
 		}
- 		$str .= 'Subject: '. $this->encode($subject) . $this->cfg['eol'];
+ 		$str .= 'Subject: '. $this->title($subject) . $this->cfg['eol'];
   		$str .= 'Date: '. date('r') . $this->cfg['eol'];
   		$str .= 'X-Priority: '. $this->cfg['priority'] . $this->cfg['eol'];
   		$str .= "Message-ID: $mid ". $this->cfg['eol'];
         $str .= 'Content-Type: '. $this->cfg['content_type'] .'; charset="'. $this->cfg['charset'] .'"'. $this->cfg['eol'];
-        $str .= 'Content-Transfer-Encoding: base64 '. $this->cfg['eol'];
+        $str .= 'Content-Transfer-Encoding: '.$this->cfg['encode'] .' '. $this->cfg['eol'];
         $str .= $this->cfg['eol'] . $this->cfg['eol'];
         return $str;
     }

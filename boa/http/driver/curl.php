@@ -16,8 +16,8 @@ class curl extends driver{
 		'proxy' => '',
 		'posttype' => 'form', //form, json, xml
 		'mimetype' => 'application/x-www-form-urlencoded',
-		'timeout_connect' => 15,
-		'timeout_execute' => 0,
+		'connect' => 15,
+		'execute' => 0,
 		'header' => [],
 		'option' => []
 	];
@@ -44,7 +44,7 @@ class curl extends driver{
 	}
 	
 	public function get($url){
-		$this->option_cfg();
+		$this->option_cfg(false);
 		$this->option[CURLOPT_URL] = $url;
 		$this->send();
 	}
@@ -70,8 +70,8 @@ class curl extends driver{
 	private function send(){
 		$this->result = [];
 
-		if($this->cfg['timeout_execute'] > 0){
-			set_time_limit($this->cfg['timeout_execute']);
+		if($this->cfg['execute'] > 0){
+			set_time_limit($this->cfg['execute']);
 		}
 
 		curl_setopt_array($this->ch, $this->option);
@@ -95,13 +95,11 @@ class curl extends driver{
 			$this->result['msg'] = $res[2];
 		}
 	}
-	
-	private function option_cfg(){
+
+	private function option_cfg($type = true){
 		$this->option = $this->cfg['option'];
 
-		if($this->cfg['posttype'] != 'form'){
-			$this->cfg['header']['Content-type'] = $this->cfg['mimetype'] .'; charset='. CHARSET;
-		}
+		if($type) $this->cfg['header']['Content-type'] = $this->cfg['mimetype'] .'; charset='. CHARSET;
 
 		$arr = [];
 		foreach($this->cfg['header'] as $k => $v){
@@ -116,12 +114,12 @@ class curl extends driver{
 			$this->option[CURLOPT_PROXY] = $this->cfg['proxy'];
 		}
 
-		if($this->cfg['timeout_connect'] > 0){
-			$this->option[CURLOPT_CONNECTTIMEOUT] = $this->cfg['timeout_connect'];
+		if($this->cfg['connect'] > 0){
+			$this->option[CURLOPT_CONNECTTIMEOUT] = $this->cfg['connect'];
 		}
 
-		if($this->cfg['timeout_execute'] > 0){
-			$this->option[CURLOPT_TIMEOUT] = $this->cfg['timeout_execute'];
+		if($this->cfg['execute'] > 0){
+			$this->option[CURLOPT_TIMEOUT] = $this->cfg['execute'];
 		}
 		
 		$this->option_ssl();

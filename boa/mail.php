@@ -12,23 +12,11 @@ class mail{
     public function __construct($cfg = []){
  		if(!$cfg['driver']) $cfg['driver'] = 'smtp';
 
-		if($cfg['from']){
-			list($addr, $name) = explode(' ', $cfg['from'], 2);
-			$cfg['from_addr'] = $addr;
-			$cfg['from_name'] = trim($name);
-		}
-
 		$driver = '\\boa\\mail\\driver\\'. $cfg['driver'];
 		$this->obj = new $driver($cfg);
     }
 
 	public function cfg($k = null, $v = null){
-		if($k == 'from'){
-			list($addr, $name) = explode(' ', $v, 2);
-			$this->obj->cfg('from_addr', $addr);
-			$this->obj->cfg('from_name', trim($name));
-		}
-
 		return $this->obj->cfg($k, $v);
 	}
 
@@ -80,6 +68,14 @@ class mail{
 	}
 
 	public function send($subject, $message, $to = null){
+		$from = $this->obj->cfg('from');
+		if(!$from){
+			$from = $this->obj->cfg('smtp.user');
+			$this->obj->cfg('from', $from);
+		}
+		list($addr, $name) = explode(' ', $from, 2);
+		$this->obj->cfg('from_addr', $addr);
+		$this->obj->cfg('from_name', trim($name));
 		return $this->obj->send($subject, $message, $to);
 	}
 }

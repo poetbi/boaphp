@@ -8,11 +8,7 @@ namespace boa\mail;
 
 use boa\base;
 
-class driver extends base{
-	protected $cfg = [
-		'charset' => CHARSET
-	];
-	
+class driver extends base{	
 	public function __construct($cfg = []){
         parent::__construct($cfg);
 	}
@@ -43,14 +39,29 @@ class driver extends base{
 		if($name !== null){
 			$name = trim($name);
 			if($name){
+				$name = $this->title($name);
 				$addr = "$name <$addr>";
 			}
 		}
 		return $addr;
 	}
 
-	protected function encode($str){
+	protected function title($str){
 		return '=?'. $this->cfg['charset'] .'?B?'. base64_encode($str) .'?=';
+	}
+
+	protected function encode($str){
+		switch($this->cfg['encode']){
+			case 'base64':
+				$str = base64_encode($str);
+				break;
+
+			case 'quoted-printable':
+				$str = quoted_printable_encode($str);
+				break;
+		}
+		$str = chunk_split($str, 76, $this->cfg['eol']);
+		return $str;
 	}
 }
 ?>

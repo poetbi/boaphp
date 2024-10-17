@@ -16,8 +16,8 @@ class socket extends driver{
 		'proxy' => '',
 		'posttype' => 'form', //form, json, xml
 		'mimetype' => 'application/x-www-form-urlencoded',
-		'timeout_connect' => 15,
-		'timeout_execute' => 0,
+		'connect' => 15,
+		'execute' => 0,
 		'header' => []
 	];
 	private $host = null;
@@ -84,9 +84,9 @@ class socket extends driver{
 		$this->result = [];
 		$response = '';
 
-		if($this->cfg['timeout_execute'] > 0){
-			set_time_limit($this->cfg['timeout_execute']);
-			stream_set_timeout($this->fp, $this->cfg['timeout_execute']);
+		if($this->cfg['execute'] > 0){
+			set_time_limit($this->cfg['execute']);
+			stream_set_timeout($this->fp, $this->cfg['execute']);
 		}
 
 		fwrite($this->fp, $data);
@@ -99,7 +99,7 @@ class socket extends driver{
 		
 		if($info['timed_out']){
 			$this->result['code'] = 62;
-			$this->result['msg'] = boa::lang('boa.error.62', $this->cfg['timeout_execute'] .'s');
+			$this->result['msg'] = boa::lang('boa.error.62', $this->cfg['execute'] .'s');
 			return false;
 		}
 
@@ -130,7 +130,7 @@ class socket extends driver{
 			$port = $this->port;
 		}
 		
-		$this->fp = fsockopen($host, $port, $errno, $errstr, $this->cfg['timeout_connect']);
+		$this->fp = fsockopen($host, $port, $errno, $errstr, $this->cfg['connect']);
 		if(!$this->fp){
 			msg::set('boa.error.61', "[$errno]$errstr");
 		}

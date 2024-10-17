@@ -26,7 +26,7 @@ class download extends base{
 
 		$arr = [];
 		if($this->cfg['expire'] > 0){
-			$arr['timeout_execute'] = $this->cfg['expire'];
+			$arr['execute'] = $this->cfg['expire'];
 		}
 		if($this->cfg['header']){
 			$arr['header'] = $this->cfg['header'];

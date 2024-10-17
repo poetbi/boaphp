@@ -22,11 +22,11 @@ class builder{
 	}
 
 	public function distinct($field){
-		$this->data['distinct'] = "DISTINCT($field), ";
+		if($field) $this->data['distinct'] = "DISTINCT($field), ";
 	}
 
 	public function field($field){
-		$this->data['field'] = $field;
+		if($field) $this->data['field'] = $field;
 	}
 
 	public function force($index){
@@ -42,7 +42,7 @@ class builder{
 	}
 
 	public function group($field){
-		$this->data['group'] = " GROUP BY $field";
+		if($field) $this->data['group'] = " GROUP BY $field";
 	}
 
 	public function having($where){
@@ -50,7 +50,7 @@ class builder{
 	}
 
 	public function order($order){
-		$this->data['order'] = " ORDER BY $order";
+		if($order) $this->data['order'] = " ORDER BY $order";
 	}
 
 	public function limit($limit){
@@ -58,24 +58,24 @@ class builder{
 	}
 
 	public function union($sql){
-		$this->data['union'] .= " UNION $sql";
+		if($sql) $this->data['union'] .= " UNION $sql";
 	}
 
 	public function union_all($sql){
-		$this->data['union'] .= " UNION ALL $sql";
+		if($sql) $this->data['union'] .= " UNION ALL $sql";
 	}
 
 	public function lock($lock){
 		switch($lock){
 			case 'share':
-				$lock = 'LOCK IN SHARE MODE';
+				$sql = ' LOCK IN SHARE MODE';
 				break;
 
 			case 'update':
-				$lock = 'FOR UPDATE';
+				$sql = ' FOR UPDATE';
 				break;
 		}
-		$this->data['lock'] = ' '. $lock;
+		if($sql) $this->data['lock'] = $sql;
 	}
 
 	public function getsql(){

@@ -17,7 +17,8 @@ class mail extends driver{
 		'to' => '',
 		'cc' => [],
 		'bcc' => [],
-		'charset' => '',
+		'charset' => CHARSET,
+		'encode' => 'base64',
 		'priority' => 3,
 		'content_type' => 'text/html',
 		'eol' => "\r\n",
@@ -71,7 +72,7 @@ class mail extends driver{
 		}
    		$str .= 'X-Priority: '. $this->cfg['priority'] . $this->cfg['eol'];
         $str .= 'Content-Type: '. $this->cfg['content_type'] .'; charset="'. $this->cfg['charset'] .'"'. $this->cfg['eol'];
-        $str .= 'Content-Transfer-Encoding: base64 '. $this->cfg['eol'];
+        $str .= 'Content-Transfer-Encoding: '.$this->cfg['encode'] . $this->cfg['eol'];
 		return $str;
 	}
 }
