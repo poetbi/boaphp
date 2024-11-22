@@ -56,7 +56,7 @@ class fileinfo{
 		return strtolower($res);
 	}
 	
-	private function file_open(){
+	private function obj(){
 		if(!$this->obj){
 			if(class_exists('finfo', false)){
 				$this->obj = new \finfo();
@@ -68,9 +68,8 @@ class fileinfo{
 	}
 	
 	private function file_read($type = FILEINFO_NONE){
-		$obj = $this->file_open();
-		$obj->set_flags($type);
-		$res = $obj->file($this->file);
+		$this->obj()->set_flags($type);
+		$res = $this->obj->file($this->file);
 		return $res;
 	}
 }

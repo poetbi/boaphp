@@ -41,7 +41,7 @@ class model extends base{
 		return $this->db->table($this->cfg['table'])->where($this->cfg['prikey'] .' = ?', $id)->update($data);
 	}
 
-	public function del(id){
+	public function del($id){
 		return $this->db->table($this->cfg['table'])->where($this->cfg['prikey'] .' = ?', $id)->delete();
 	}
 }

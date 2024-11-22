@@ -7,6 +7,7 @@ return [
 	'mod' => '根据参数创建新模块，例如：-m news',
 	'clear' => '清空当前实例缓存',
 	'install' => '根据参数安装已有模块，例如：-i demo',
+	'upgrade' => '根据参数升级已有模块，例如：-g demo',
 	'uninstall' => '根据参数卸载已有模块，例如：-u demo',
 	'run' => '根据参数执行程序，支持输入多个参数，<br>第一个参数指定要执行的程序，必填<br>例如：-r news.index.count arg3=1 arg4=2'
 ];

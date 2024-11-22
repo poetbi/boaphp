@@ -9,6 +9,10 @@ class installer{
 
 	}
 
+	public function upgrade(){
+
+	}
+
 	public function uninstall(){
 
 	}

@@ -24,8 +24,8 @@ class view{
 		if(in_array($k, $this->remain)){
 			msg::set('boa.error.8', $k);
 		}else{
-			$act = boa::env('act');
-			$this->var[$act][$k] = $v;
+			$key = $this->key();
+			$this->var[$key][$k] = $v;
 		}
 	}
 
@@ -71,19 +71,20 @@ class view{
 	}
 
 	public function html($tpl = '', $return = false){
-		if(!$tpl){
-			$con = boa::env('con');
-			$act = boa::env('act');
-			$tpl = "$con/$act";
-		}
+		$arr = preg_split('/\/|\./', "..$tpl");
+		$max = count($arr);
+		$mod = $arr[$max - 3] ? $arr[$max - 3] : boa::env('mod');
+		$con = $arr[$max - 2] ? $arr[$max - 2] : boa::env('con');
+		$act = $arr[$max - 1] ? $arr[$max - 1] : boa::env('act');
+		$tpl = "$con/$act";
 
-		$__file = $this->cache_file($tpl);
+		$__file = $this->cache_file($mod, $tpl);
 		if($__file && file_exists($__file)){
 			header('Content-type: text/html; charset='. CHARSET);
 
-			$act = boa::env('act');
-			if($this->var[$act]){
-				extract($this->var[$act]);
+			$key = $this->key();
+			if(is_array($this->var[$key])){
+				extract($this->var[$key]);
 			}
 
 			msg::set_type('str');
@@ -199,14 +200,20 @@ class view{
 	private function require_file($__name){
 		header('Content-type: text/html; charset='. CHARSET);
 
-		$act = boa::env('act');
-		if($this->var[$act]){
-			extract($this->var[$act]);
+		$key = $this->key();
+		if(is_array($this->var[$key])){
+			extract($this->var[$key]);
 		}
 
 		msg::set_type('str');
+		$mod = boa::env('mod');
 		$tpl = "msg/$__name";
-		$__file = $this->cache_file($tpl, true);
+		if(file_exists(BS_WWW ."tpl/$mod/msg")){
+			$__file = $this->cache_file($mod, $tpl, true);
+		}else if(file_exists(BS_WWW ."tpl/msg")){
+			$__file = $this->cache_file(null, $tpl, true);
+		}
+
 		if($__file && file_exists($__file)){
 			require($__file);
 		}else{
@@ -214,15 +221,14 @@ class view{
 		}
 	}
 
-	private function cache_file($tpl, $silence = false){
-		$mod = boa::env('mod');
-		$file = BS_WWW ."tpl/$mod/$tpl.html";
+	private function cache_file($mod, $tpl, $silence = false){
+		$_file = $file = BS_WWW ."tpl/$mod/$tpl.html";
 		if(file_exists($file)){
 			$mtime = filemtime($file);
 		}else{
-			$file = BS_MOD ."$mod/view/$tpl.html";
-			if(file_exists($file)){
-				$mtime = filemtime($file);
+			if($mod){
+				$file = BS_MOD ."$mod/view/$tpl.html";
+				if(file_exists($file)) $mtime = filemtime($file);
 			}
 		}
 
@@ -237,12 +243,16 @@ class view{
 				$view->file($file, $__file);
 			}
 		}else{
-			if(!$silence){
-				msg::set('boa.error.2', BS_WWW ."tpl/$mod/$tpl.html");
-			}
+			if(!$silence) msg::set('boa.error.2', $_file);
 			$__file = null;
 		}
 		return $__file;
+	}
+	
+	private function key(){
+		$v = boa::env();
+		$key = "{$v['mod']}.{$v['con']}.{$v['act']}";
+		return crc32($key);
 	}
 }
 ?>

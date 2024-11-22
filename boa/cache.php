@@ -32,11 +32,7 @@ class cache{
 
 	public function set($name, $val, $ttl = 0){
 		if($ttl == 0) $ttl = $this->ttl;
-		$res = $this->obj->set($name, $val, $ttl);
-		if($res){
-			$this->key = $name;
-		}
-		return $res;
+		return $this->obj->set($name, $val, $ttl);
 	}
 
 	public function xget($name, $args = [], $ttl = 0){
@@ -46,16 +42,14 @@ class cache{
 			if($ttl == 0) $ttl = $this->ttl;
 			$res = $this->xset($name, $cname, $args, $ttl);
 		}
+		$this->key = $cname;
 		return $res;
 	}
 
 	private function xset($name, $cname, $args, $ttl){
 		$val = $this->create($name, $args)->get();
 		$res = $this->obj->set($cname, $val, $ttl);
-		if($res){
-			$this->key = $cname;
-			return $val;
-		}
+		if($res) return $val;
 		return $res;
 	}
 
@@ -67,7 +61,7 @@ class cache{
 		$this->obj->clear();
 	}
 
-	private function cname($name, $args){
+	public function cname($name, $args){
 		if($args){
 			ksort($args);
 			$key = json_encode($args);

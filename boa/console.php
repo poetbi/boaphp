@@ -31,6 +31,7 @@ class console{
 		'm' => 'mod',
 		'c' => 'clear',
 		'i' => 'install',
+		'g' => 'upgrade',
 		'u' => 'uninstall',
 		'r' => 'run'
 	];
@@ -78,6 +79,11 @@ class console{
 			case '-i' :
 			case 'install' :
 				$this->install($_SERVER['argv'][2]);
+				break;
+
+			case '-g' :
+			case 'upgrade' :
+				$this->upgrade($_SERVER['argv'][2]);
 				break;
 
 			case '-u' :
@@ -165,6 +171,12 @@ class console{
 	private function install($name){
 		if(!$name) msg::set('boa.error.91', '');
 		boa::installer()->install($name);
+		$this->result();
+	}
+
+	private function upgrade($name){
+		if(!$name) msg::set('boa.error.91', '');
+		boa::installer()->upgrade($name);
 		$this->result();
 	}
 

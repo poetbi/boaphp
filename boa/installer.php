@@ -53,9 +53,13 @@ class installer{
 	}
 
 	public function install($mod){
-		//boa::file()->chmod(BS_BOA, 0555);
 		$program = $this->program($mod);
 		return $program->install();
+	}
+
+	public function upgrade($mod){
+		$program = $this->program($mod);
+		return $program->upgrade();
 	}
 
 	public function uninstall($mod){
@@ -64,12 +68,7 @@ class installer{
 	}
 
 	private function program($mod){
-		$file = BS_MOD ."$mod/installer/installer.php";
-		if(file_exists($file)){
-			$cls = "\\mod\\$mod\\installer\\installer";
-			return new $cls();
-		}else{
-			msg::set('boa.error.2', $file);
-		}
+		$cls = "\\mod\\$mod\\installer\\installer";
+		return new $cls();
 	}
 }
