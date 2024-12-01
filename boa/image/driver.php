@@ -11,7 +11,7 @@ use boa\base;
 
 class driver extends base{
 	protected $cfg = [
-		'wm_type'  => 2, //0=closed 1=text 2=logo
+		'wm_type'  => 1, //0=closed 1=text 2=logo
 		'wm_ratio' => 0.4,
 		'wm_margin'  => 5,
 		'wm_text'  => 'boasoft.top',
@@ -38,16 +38,7 @@ class driver extends base{
 	public $dst_x = 0;
 	public $dst_y = 0;
 
-	public function set_image($img, $info){
-		$this->file = $img;
-		$this->type = $info[2];
-		$this->src_w = $info[0];
-		$this->src_h = $info[1];
-		$this->mime = $info['mime'];
-		$this->create_image();
-	}
-
-	public function set_size($dst_w, $dst_h){
+	protected function set_size($dst_w, $dst_h){
 		$this->dst_w = $dst_w;
 		$this->dst_h = $dst_h;
 	}
@@ -73,31 +64,6 @@ class driver extends base{
 				$this->dst_w = ceil($this->dst_h * $this->src_w / $this->src_h);
 				break;
 		}
-	}
-
-	protected function get_box(){
-		if($this->cfg['wm_type'] == 1){
-			$font = $this->res_path('wm_font');
-			if(file_exists($font)){
-				$arr = imagettfbbox($this->cfg['wm_size'], 0, $font, $this->cfg['wm_text']);
-				$box_w = $arr[2] - $arr[0];
-				$box_h = $arr[1] - $arr[7];
-			}else{
-				$box_w = imagefontwidth(5) * util::len($this->cfg['wm_text']);
-				$box_h = imagefontheight(5);
-			}
-		}else{
-			$logo = $this->res_path('wm_logo');
-			$info = getimagesize($logo);
-			$box_w = $info[0];
-			$box_h = $info[1];
-		}
-		$box = [
-			'w' => $box_w,
-			'h' => $box_h,
-			't' => $info[2]
-		];
-		return $box;
 	}
 
 	protected function box_pos($box){

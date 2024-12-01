@@ -11,22 +11,29 @@ use boa\msg;
 use boa\image\driver;
 
 class gd extends driver{
-	protected function create_image(){
+	public function open($img){
+		$info = getimagesize($img);
+		if(!$info) msg::set('boa.error.161', $img);
+
+		$this->file = $img;
+		$this->type = image_type_to_extension($info[2], false);
+		$this->src_w = $info[0];
+		$this->src_h = $info[1];
+		$this->mime = $info['mime'];
+
 		$this->clear();
 		$create = $this->fun_create($this->type);
 		$this->im = $create($this->file);
 	}
 
 	public function watermark($type){
-		if($this->type == IMAGETYPE_GIF){
+		if($this->type == 'gif'){
 			$str = file_get_contents($this->file);
 			$ani = strpos($str, chr(0x21).chr(0xFF).chr(0x0B).'NETSCAPE2.0') === false ? 0 : 1;
-			if($ani){
-				return;
-			}
+			if($ani) return;
 		}
 
-		$box = $this->get_box();
+		$box = $this->get_box($type);
 		if($box['w'] > $this->src_w * $this->cfg['wm_ratio'] || $box['h'] > $this->src_h * $this->cfg['wm_ratio']){
 			return;
 		}
@@ -44,7 +51,8 @@ class gd extends driver{
 		}else{
 			$logo = $this->res_path('wm_logo');
 			if(file_exists($logo)){
-				$create = $this->fun_create($box['t']);
+				$ext = image_type_to_extension($box['t'], false);
+				$create = $this->fun_create($ext);
 				$imi = $create($logo);
 				imagealphablending($this->im, true);
 				imagecopymerge($this->im, $imi, $x, $y, 0, 0, $box['w'], $box['h'], $this->cfg['wm_alpha']);
@@ -99,8 +107,8 @@ class gd extends driver{
 		imagefilledrectangle($dst, 0, 0, $this->src_w, $this->src_h, $color);
 		imagecopy($dst, $this->im, 0, 0, 0, 0, $this->src_w, $this->src_h);
 
-		imagedestroy($this->im);
 		$this->im = $dst;
+		imagedestroy($dst);
 	}
 	
 	public function flip($mode){
@@ -142,44 +150,59 @@ class gd extends driver{
 	}
 
 	public function save($to, $quality){
-		if(!$to){
-			$to = $this->file;
-		}
+		if(!$to) $to = $this->file;
 		$ext = strtolower(substr(strrchr($to, '.'), 1));
-		$write = $this->fun_write_ext($ext);
-		if($ext == 'jpg'){
+		$write = $this->fun_write($ext);
+		if(in_array($ext, ['jpg', 'jpeg', 'webp'])){
 			$write($this->im, $to, $quality);
 		}else{
 			$write($this->im, $to);
 		}
-		$this->clear();
 		return $to;
 	}
 
-	public function output($type = null){
-		if(!$type){
-			switch($this->type){
-				case IMAGETYPE_GIF:
-					$type = 'gif';
-					break;
-
-				case IMAGETYPE_JPEG:
-					$type = 'jpeg';
-					break;
-
-				case IMAGETYPE_PNG:
-					$type = 'png';
-					break;
-			}
-		}
-		$func = "image$type";
+	public function output($type){
+		if(!$type) $type = $this->type;
+		$func = $this->fun_write($type);
 		$func($this->im);
+	}
+
+	public function clear(){
+		if($this->im){
+			imagedestroy($this->im);
+			$this->im = null;
+		}
+	}
+
+	private function get_box($type){
+		if($type == 1){
+			$font = $this->res_path('wm_font');
+			if(file_exists($font)){
+				$arr = imagettfbbox($this->cfg['wm_size'], 0, $font, $this->cfg['wm_text']);
+				$box_w = $arr[2] - $arr[0];
+				$box_h = $arr[1] - $arr[7];
+			}else{
+				$box_w = imagefontwidth(5) * util::len($this->cfg['wm_text']);
+				$box_h = imagefontheight(5);
+			}
+		}else{
+			$logo = $this->res_path('wm_logo');
+			$info = getimagesize($logo);
+			$box_w = $info[0];
+			$box_h = $info[1];
+		}
+		$box = [
+			'w' => $box_w,
+			'h' => $box_h,
+			't' => $info[2]
+		];
+		return $box;
 	}
 
 	private function process(){
 		$dst = imagecreatetruecolor($this->dst_w, $this->dst_h);
 
-		if($this->type === IMAGETYPE_PNG){
+		if($this->type == 'png'){
 			imagealphablending($dst, false);
 			imagesavealpha($dst, true);
 		}
@@ -188,13 +211,7 @@ class gd extends driver{
 
 		imagedestroy($this->im);
 		$this->im = $dst;
-	}
-
-	private function clear(){
-		if($this->im){
-			imagedestroy($this->im);
-			$this->im = null;
-		}
+		imagedestroy($dst);
 	}
 	
 	private function flip_h(){
@@ -234,20 +251,16 @@ class gd extends driver{
 	}
 
 	private function fun_create($type){
-		switch($type){
-			case IMAGETYPE_GIF : $fun = 'imagecreatefromgif'; break;
-			case IMAGETYPE_JPEG: $fun = 'imagecreatefromjpeg'; break;
-			case IMAGETYPE_PNG : $fun = 'imagecreatefrompng'; break;
-		}
+		if($type == 'jpg') $type = 'jpeg';
+		$fun = "imagecreatefrom$type";
+		if(!function_exists($fun)) msg::set('boa.error.6', $fun);
 		return $fun;
 	}
 
-	private function fun_write_ext($ext){
-		switch($ext){
-			case 'gif': $fun = 'imagegif'; break;
-			case 'jpg': $fun = 'imagejpeg'; break;
-			case 'png': $fun = 'imagepng'; break;
-		}
+	private function fun_write($type){
+		if($type == 'jpg') $type = 'jpeg';
+		$fun = "image$type";
+		if(!function_exists($fun)) msg::set('boa.error.6', $fun);
 		return $fun;
 	}
 }

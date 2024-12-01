@@ -303,7 +303,7 @@ class compiler{
 			case preg_match('/^(array\(.+?\)|\[.+?\])$/i', $v):
 				return $v;
 
-			case preg_match('/^([\-]?\d+[\.\d]*|true|false)$/i', $v):
+			case preg_match('/^([\-]?\d+[\.\d]*|true|false|null)$/i', $v):
 				return $v;
 
 			case preg_match($this->tag, $v):

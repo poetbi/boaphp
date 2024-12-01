@@ -60,7 +60,7 @@ return [
 	156 => 'Unpacking file %0 failed: %1',
 	157 => 'Opening archive %0 failed: %1',
 
-	161 => 'Unsupported image type %0',
+	161 => 'Failed to open %0',
 
 	170 => 'Failed to upload file %0',
 	171 => 'Possibly illegal upload (%0)',

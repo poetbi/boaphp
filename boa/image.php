@@ -19,13 +19,9 @@ class image{
 	public function cfg($k = null, $v = null){
 		return $this->obj->cfg($k, $v);
 	}
-	
+
 	public function open($img){
-		$info = getimagesize($img);
-		if(!in_array($info[2], [IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG])){
-			msg::set('boa.error.161', $img);
-		}
-		$this->obj->set_image($img, $info);
+		$this->obj->open($img);
 		return $this;
 	}
 
@@ -143,8 +139,11 @@ class image{
 	public function output($type = null){
 		ob_clean();
 		header('Content-type: '. $this->obj->mime);
-		if($type == 'jpg') $type = 'jpeg';
 		$this->obj->output($type);
+	}
+
+	public function clear(){
+		return $this->obj->clear();
 	}
 }
 ?>
