@@ -20,8 +20,8 @@ class image{
 		return $this->obj->cfg($k, $v);
 	}
 
-	public function open($img){
-		$this->obj->open($img);
+	public function open($img, $type = 0){
+		$this->obj->open($img, $type);
 		return $this;
 	}
 

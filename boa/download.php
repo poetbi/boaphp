@@ -13,7 +13,11 @@ class download extends base{
 		'size' => 2, //MB, 0=unlimited
 		'exts' => 'jpg,png,gif',
 		'path' => BS_WWW .'file/',
-		'name' => null
+		'name' => null,
+		'ext' => null,
+		'default' => 'Y/m/d/Hisv',
+		'break' => false,
+		'auto' => false
 	];
 	private $files = [];
 	private $i = 0;
@@ -21,8 +25,6 @@ class download extends base{
 
 	public function __construct($cfg = []){
 		parent::__construct($cfg);
-
-        $this->format_exts();
 
 		$arr = [];
 		if($this->cfg['expire'] > 0){
@@ -34,13 +36,6 @@ class download extends base{
 		$this->obj = boa::http($arr);
 	}
 
-	public function cfg($k = null, $v = null){
-		if($k == 'exts' && $v !== null){
-			$this->format_exts();
-		}
-		return parent::cfg($k, $v);
-	}
-
 	public function get_file($i = 0){
 		return $this->files[$i];
 	}
@@ -49,26 +44,26 @@ class download extends base{
 		return $this->files;
 	}
 
-	public function one($file, $save = ''){
-		if($save){
-			$this->cfg('name', $save);
-		}
+	public function one($file, $name = null, $ext = null){
+		if($name) $this->cfg('name', $name);
+		if($ext) $this->cfg('ext', $ext);
 		$this->files = [];
-		
+		$this->i = 0;
+
 		$res = $this->download($file);
 		return $res;
 	}
 
-	public function more($files, $save = []){
-		if($save){
-			$this->cfg('name', $save);
-		}
+	public function more($files, $name = [], $ext = null){
+		if($name) $this->cfg('name', $name);
+		if($ext) $this->cfg('ext', $ext);
 		$this->files = [];
 
 		$res = true;
 		foreach($files as $k => $v){
 			$this->i = $k;
 			$res = $this->download($v) && $res;
+			if(!$res && $this->cfg['break']) return false;
 		}
 		return $res;
 	}
@@ -77,7 +72,8 @@ class download extends base{
 		$this->files[$this->i]['name'] = $file;
 
 		$ext = strtolower(substr(strrchr($file, '.'), 1));
-		if(!preg_match("/(^|,)$ext(,|$)/", $this->cfg['exts'])){
+		$exts = str_replace(' ', '', strtolower($this->cfg['exts']));
+		if(!preg_match("/(^|,)$ext(,|$)/", $exts)){
 			$this->files[$this->i]['error'] = boa::lang('boa.error.123', $ext);
 			return false;
 		}
@@ -93,7 +89,14 @@ class download extends base{
 		$this->obj->get($file);
 		if($this->obj->get_status() == 200){
 			$body = $this->obj->get_body();
-			$res = boa::file()->write($path, $body);
+			if($this->cfg['auto']){
+				$im = boa::image();
+				$im->open($body, 1);
+				$res = $im->save($path);
+				$im->clear();
+			}else{
+				$res = file_put_contents($path, $body);
+			}
 			if($res){
 				$this->files[$this->i]['type'] = $header['Content-Type'];
 				$this->files[$this->i]['size'] = $size;
@@ -115,22 +118,27 @@ class download extends base{
 		}else{
 			$name = $this->cfg['name'];
 		}
+		if($this->cfg['ext']){
+			if(is_array($this->cfg['ext'])){
+				$ext = $this->cfg['ext'][$this->i];
+			}else{
+				$ext = $this->cfg['ext'];
+			}
+		}
 
 		if(!$name){
-			$micro = substr(strrchr(microtime(true), '.'), 1);
-			$name = date('Y/m/d/His', time()) ."$micro.$ext";
+			$date = new \DateTimeImmutable();
+			$name = $date->format($this->cfg['default']);
 		}else{
 			$reg = preg_quote($this->cfg['path'], '/');
 			$name = preg_replace("/^$reg/", '', $name);
-			$name = ltrim($name, ' /');
+			$name = str_replace('../', '', $name);
 		}
 
-		$path = $this->cfg['path'] . $name;
+		$path = $this->cfg['path'] ."$name.$ext";
+		$dir = dirname($path);
+		if($dir && !file_exists($dir)) mkdir($dir, 0777, true);
 		return $path;
-	}
-
-	private function format_exts(){
-		$this->cfg['exts'] = str_replace(' ', '', strtolower($this->cfg['exts']));
 	}
 }
 ?>

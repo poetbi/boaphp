@@ -12,7 +12,7 @@ use boa\log\driver;
 class file extends driver{
 	protected $cfg = [
 		'timeline' => false,
-		'file' => '%Y%m/%d.log'
+		'file' => 'Ym/d'
 	];
 
 	public function __construct($cfg){
@@ -45,18 +45,9 @@ class file extends driver{
 	}
 
 	private function format($file){
-		preg_match_all('/\%([a-zA-Z])/', $file, $arr);
-		$str = implode('|', $arr[1]);
-		$val = explode('|', date($str, time()));
-		foreach($arr[1] as $k => $v){
-			$file = str_replace("%$v", $val[$k], $file);
-		}
-
-		if(PHP_SAPI == 'cli'){
-			$file = preg_replace('/\.log$/i', '.cli.log', $file);
-		}
-
-		return $file;
+		$file = date($file);
+		if(PHP_SAPI == 'cli') $file .= '.cli';
+		return "$file.log";
 	}
 }
 ?>

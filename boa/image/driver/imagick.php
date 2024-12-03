@@ -22,10 +22,16 @@ class imagick extends driver{
 		}
 	}
 
-	public function open($img){
-		$this->file = $img;
-		$this->im->readImage($this->file);
-		$this->type = strtolower(substr(strrchr($img, '.'), 1));
+	public function open($img, $type = 0){
+		$this->clear();
+		if($type){
+			$res = $this->im->readImageBlob($img);
+		}else{
+			$this->file = $img;
+			$res = $this->im->readImage($img);
+		}
+		if(!$res) msg::set('boa.error.161', $this->file);
+
 		$this->src_w = $this->im->getImageWidth();
 		$this->src_h = $this->im->getImageHeight();
 		$this->mime = $this->im->getImageMimeType();
@@ -111,7 +117,6 @@ class imagick extends driver{
 	}
 
 	public function output($type){
-		$this->im->setImageFormat($type);
 		echo $this->im->getImagesBlob();
 	}
 

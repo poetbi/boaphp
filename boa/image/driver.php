@@ -27,7 +27,6 @@ class driver extends base{
 	protected $im;
 
 	public $file = null;
-	public $type = null;
 	public $mime = null;
 	public $src_w = 0;
 	public $src_h = 0;

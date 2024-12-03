@@ -11,19 +11,29 @@ use boa\msg;
 use boa\image\driver;
 
 class gd extends driver{
-	public function open($img){
-		$info = getimagesize($img);
-		if(!$info) msg::set('boa.error.161', $img);
+	private $type;
 
-		$this->file = $img;
+	public function open($img, $type = 0){
+		if($type){
+			$info = getimagesizefromstring($img);
+		}else{
+			$info = getimagesize($img);
+			$this->file = $img;
+		}
+		if(!$info) msg::set('boa.error.161', $this->file);
+		$this->clear();
+
 		$this->type = image_type_to_extension($info[2], false);
 		$this->src_w = $info[0];
 		$this->src_h = $info[1];
 		$this->mime = $info['mime'];
 
-		$this->clear();
-		$create = $this->fun_create($this->type);
-		$this->im = $create($this->file);
+		if($type){
+			$create = 'imagecreatefromstring';
+		}else{
+			$create = $this->fun_create($this->type);
+		}
+		$this->im = $create($img);
 	}
 
 	public function watermark($type){
