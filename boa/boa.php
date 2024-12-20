@@ -359,12 +359,12 @@ class boa{
 			if(is_resource($v)){
 				$v = serialize($v);
 			}else{
-				$v = self::json()->encode($v);
+				$v = json_encode($v, JSON_UNESCAPED_UNICODE);
 			}
 		}
 		$time = date(boa::lang('boa.locale.longtime'));
 		$str = "[$time] $k : $v\r\n\r\n";
-		self::file()->write(BS_VAR .'debug.txt', $str, true);
+		file_put_contents(BS_VAR .'debug.txt', $str, FILE_APPEND);
 	}
 
 	public static function __callStatic($name, $cfg = []){

@@ -135,7 +135,8 @@ class download extends base{
 			$name = str_replace('../', '', $name);
 		}
 
-		$path = $this->cfg['path'] ."$name.$ext";
+		if($ext) $name .= ".$ext";
+		$path = $this->cfg['path'] . $name;
 		$dir = dirname($path);
 		if($dir && !file_exists($dir)) mkdir($dir, 0777, true);
 		return $path;

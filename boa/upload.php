@@ -21,10 +21,6 @@ class upload extends base{
 	private $files = [];
 	private $i = 0;
 
-	public function __construct($cfg = []){
-		parent::__construct($cfg);
-	}
-
 	public function get_file($i = 0){
 		return $this->files[$i];
 	}
@@ -64,7 +60,14 @@ class upload extends base{
 			}
 
 			$path = $this->path($ext);
-			$res = boa::file()->write($path, $body);
+			if($this->cfg['auto']){
+				$im = boa::image();
+				$im->open($body, 1);
+				$res = $im->save($path);
+				$im->clear();
+			}else{
+				$res = file_put_contents($path, $body);
+			}
 			if($res){
 				$this->files[0]['file'] = $path;
 				return true;
@@ -213,7 +216,8 @@ class upload extends base{
 			$name = str_replace('../', '', $name);
 		}
 
-		$path = $this->cfg['path'] ."$name.$ext";
+		if($ext) $name .= ".$ext";
+		$path = $this->cfg['path'] . $name;
 		$dir = dirname($path);
 		if($dir && !file_exists($dir)) mkdir($dir, 0777, true);
 		return $path;

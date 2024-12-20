@@ -6,20 +6,25 @@ Licenses: Apache-2.0 (http://apache.org/licenses/LICENSE-2.0)
 */
 namespace boa;
 
-class permission{
+class permission extends base{
+	protected $cfg = [
+		'cacher' => 'permission',
+		'mode' => 'a'
+	];
 	private $perms = [];
 	private $perm = null;
-	
-	public function validate($group = '', $mode = 'da'){
+
+	public function validate($group = '', $mode = null){
 		$res = $this->check($group, $mode);
 		if(!$res){
-			msg::set('boa.error.21', $this->perm_code());
+			msg::set('boa.error.21', $this->perm);
 		}
 	}
 
-	public function check($group = '', $mode = 'da'){
+	public function check($group = '', $mode = null){
 		$this->perm_code();
-		$this->perms = boa::cache()->xget('permission', ['group' => $group]);
+		if(!$mode) $mode = $this->cfg['mode'];
+		$this->perms = boa::cache()->xget($this->cfg['cacher'], ['group' => $group]);
 
 		$res = false;
 		switch($mode){
@@ -42,7 +47,7 @@ class permission{
 		}
 		return $res;
 	}
-	
+
 	private function check_allow(){
 		if($this->perms['allow']){
 			foreach($this->perms['allow'] as $v){

@@ -9,10 +9,6 @@ namespace boa\mail;
 use boa\base;
 
 class driver extends base{	
-	public function __construct($cfg = []){
-        parent::__construct($cfg);
-	}
-
 	public function anti_spam($header){
 		if($header){
 			foreach($header as $k => $v){

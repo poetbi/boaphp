@@ -81,7 +81,7 @@ class http{
 						break;
 
 					case 'json':
-						$data = boa::json()->encode($data);
+						$data = json_encode($data);
 						break;
 
 					case 'xml':

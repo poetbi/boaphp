@@ -36,6 +36,7 @@ return [
 	//'CONSOLE' => [],
 	//'PAGE' => [],
 	//'MQ' => [],
-	//'LOG' => []
+	//'LOG' => [],
+	//'PERMISSION' => []
 ];
 ?>
