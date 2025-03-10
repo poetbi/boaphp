@@ -26,6 +26,7 @@ class boa{
 	private static $save;
 
 	public static function init(){
+		self::$info['call'] = 0;
 		self::$info['time_start'] = microtime(true);
 		self::$info['mem_start'] = memory_get_usage();
 		set_error_handler(['\\boa\\boa', 'error']);
@@ -60,6 +61,7 @@ class boa{
 	}
 
 	public static function call($key = null, $var = []){
+		$env = [];
 		if($key){
 			$arr = explode('.', "..$key");
 			$max = count($arr);
@@ -292,7 +294,7 @@ class boa{
 		header('Content-type: text/html; charset='. CHARSET);
 		header('X-Powered-By: boaPHP (http://boasoft.top)');
 		
-		if($_SERVER['HTTP_ORIGIN'] && defined('CORS')){
+		if(array_key_exists('HTTP_ORIGIN', $_SERVER) && defined('CORS')){
 			header('Access-Control-Allow-Origin: '. CORS['origin']);
 			header('Access-Control-Allow-Credentials: true');
 			if(CORS['headers']){
@@ -381,12 +383,14 @@ class boa{
 
 	public static function type(){
 		$name = defined('MSG_TYPE_VAR') ? MSG_TYPE_VAR : '_msg';
-		$type = $_REQUEST[$name];
-		if($type){
-			msg::set_type($type);
-		}else{
-			if(defined('MSG_TYPE')){
-				msg::set_type(MSG_TYPE);
+		if(array_key_exists($name, $_REQUEST)){
+			$type = $_REQUEST[$name];
+			if($type){
+				msg::set_type($type);
+			}else{
+				if(defined('MSG_TYPE')){
+					msg::set_type(MSG_TYPE);
+				}
 			}
 		}
 	}

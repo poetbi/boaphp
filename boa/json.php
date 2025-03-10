@@ -36,6 +36,8 @@ class json extends base{
 	}
 
 	public function decode($val, $type = null){
+		if($val === null) return;
+
 		if($type === null) $type = $this->cfg['array'];
 		$res = json_decode($val, $type);
 

@@ -65,7 +65,7 @@ class log{
 		if($this->cfg['enable']){
 			if($this->log || strpos($this->cfg['type'], 'info') !== false){
 				$arr = boa::info();
-				$info['time'] = date('Y-m-d H:i:s', $arr['time_start']);
+				$info['time'] = date('Y-m-d H:i:s', floor($arr['time_start']));
 				$info['from'] = $_SERVER['REMOTE_ADDR'] .':'. $_SERVER['REMOTE_PORT'];
 				$info['type'] = $_SERVER['REQUEST_METHOD'];
 				$info['uri']  = $_SERVER['REQUEST_URI'];

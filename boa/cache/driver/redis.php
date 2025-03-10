@@ -17,6 +17,7 @@ class redis{
 		'timeout' => 0,
         'option' => []
     ];
+	private $obj;
 
 	public function __construct($cfg){
 		if(!extension_loaded('redis')){

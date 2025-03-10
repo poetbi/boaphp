@@ -6,7 +6,7 @@ Licenses: Apache-2.0 (http://apache.org/licenses/LICENSE-2.0)
 */
 namespace boa;
 
-class database{
+class database extends \boa\database\base{
 	public $cfg = [
 		'driver' => 'pdo', //pdo, mysqli
 		'prefix' => '',
@@ -90,7 +90,7 @@ class database{
 	}
 
 	public function table($table){
-		$this->builder = new \boa\database\builder($this->cfg['prefix'] . $table);
+		$this->builder = new \boa\database\builder($this->cfg['prefix'] . $table, $this->cfg['type']);
 		return $this;
 	}
 
@@ -105,7 +105,7 @@ class database{
 
 					case $name == 'join':
 						$table = $this->cfg['prefix'] . $args[0];
-						if($args[2]){
+						if(isset($args[2])){
 							$this->builder->$name($table, $args[1], $args[2]);
 						}else{
 							$this->builder->$name($table, $args[1]);
@@ -160,7 +160,7 @@ class database{
 		$sql = $this->prefix($sql);
 		if(is_array($args)){
 			foreach($args as $arg){
-				$arg = is_null($arg) ? 'NULL' : "'". addslashes($arg) ."'";
+				$arg = is_null($arg) ? 'NULL' : $this->escape($arg);
 				$sql = preg_replace('/\?/', $arg, $sql, 1);
 			}
 		}
@@ -168,7 +168,8 @@ class database{
 	}
 
 	private function prefix($sql){
-		return str_replace('@bs_', $this->cfg['prefix'], $sql);
+		if($sql) $sql = str_replace('@bs_', $this->cfg['prefix'], $sql);
+		return $sql;
 	}
 
 	private function db($type){
@@ -206,7 +207,7 @@ class database{
 	}
 
 	private function hash($type){
-		if($this->hashtype == 0){
+		if($this->cfg['hashtype'] == 0){
 			$num = count($this->cfg[$type]);
 			$i = $_SERVER['REMOTE_PORT'] % $num;
 		}else{

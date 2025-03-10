@@ -10,7 +10,7 @@ class archive{
 	private $obj;
 
 	public function __construct($cfg = []){
-		if(!$cfg['driver']) $cfg['driver'] = 'zip';
+		if(!array_key_exists('driver', $cfg)) $cfg['driver'] = 'zip';
 		
 		$this->cfg = $cfg;
 	}

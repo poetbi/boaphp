@@ -83,7 +83,7 @@ class view{
 			header('Content-type: text/html; charset='. CHARSET);
 
 			$key = $this->key();
-			if(is_array($this->var[$key])){
+			if(array_key_exists($key, $this->var) && is_array($this->var[$key])){
 				extract($this->var[$key]);
 			}
 
@@ -201,7 +201,7 @@ class view{
 		header('Content-type: text/html; charset='. CHARSET);
 
 		$key = $this->key();
-		if(is_array($this->var[$key])){
+		if(array_key_exists($key, $this->var) && is_array($this->var[$key])){
 			extract($this->var[$key]);
 		}
 

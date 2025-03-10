@@ -9,7 +9,7 @@ namespace boa\database\driver;
 use boa\boa;
 use boa\msg;
 
-class mysqli{
+class mysqli extends \boa\database\base{
 	public $cfg = [
 		'charset' => 'utf8',
 		'persist' => false,
@@ -87,12 +87,7 @@ class mysqli{
 	}
 
 	public function page($sql = null){
-		if(!$sql){
-			$sql = $this->sql;
-			$sql = preg_replace('/select (.+?) from /i', 'SELECT COUNT(*) FROM ', $sql);
-			$sql = preg_replace('/ limit [\d]+(\s*,\s*[\d]+)?/i', '', $sql);
-			$sql = preg_replace('/ order by (.+) (asc|desc)/i', '', $sql);
-		}
+		if(!$sql) $sql = $this->pagesql($this->sql);
 		$res = $this->link->query($sql);
 		if($res){
 			$rs = $res->fetch_row();

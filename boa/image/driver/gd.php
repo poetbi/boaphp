@@ -8,6 +8,7 @@ namespace boa\image\driver;
 
 use boa\boa;
 use boa\msg;
+use boa\util;
 use boa\image\driver;
 
 class gd extends driver{

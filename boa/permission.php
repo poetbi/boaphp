@@ -49,15 +49,15 @@ class permission extends base{
 	}
 
 	private function check_allow(){
-		if($this->perms['allow']){
+		if(array_key_exists('allow', $this->perms)){
 			foreach($this->perms['allow'] as $v){
 				if($this->match($v)) return true;
 			}
 		}
 	}
-	
+
 	private function check_deny(){
-		if($this->perms['deny']){
+		if(array_key_exists('deny', $this->perms)){
 			foreach($this->perms['deny'] as $v){
 				if($this->match($v)) return true;
 			}

@@ -121,7 +121,7 @@ class curl extends driver{
 		if($this->cfg['execute'] > 0){
 			$this->option[CURLOPT_TIMEOUT] = $this->cfg['execute'];
 		}
-		
+
 		$this->option_ssl();
 	}
 
@@ -132,18 +132,21 @@ class curl extends driver{
 
 			$curl = BS_VAR .'http/';
 			if($this->cfg['ssl'] == 2){
-				if(!$this->option[CURLOPT_SSLCERT] && file_exists($curl .'two/cacert.pem')){
-					$this->option[CURLOPT_SSLCERT] = $curl .'two/cacert.pem';
+				$file = $curl .'two/cacert.pem';
+				if(!array_key_exists(CURLOPT_SSLCERT, $this->option) && file_exists($file)){
+					$this->option[CURLOPT_SSLCERT] = $file;
 				}
 				$this->option[CURLOPT_SSLCERTTYPE] = 'PEM';
 
-				if(!$this->option[CURLOPT_SSLKEY] && file_exists($curl .'two/cacert.key')){
-					$this->option[CURLOPT_SSLKEY] = $curl .'two/cacert.key';
+				$file = $curl .'two/cacert.key';
+				if(!array_key_exists(CURLOPT_SSLKEY, $this->option) && file_exists($file)){
+					$this->option[CURLOPT_SSLKEY] = $file;
 				}
 				$this->option[CURLOPT_SSLKEYTYPE] = 'PEM';
 			}else{
-				if(!$this->option[CURLOPT_CAINFO] && file_exists($curl .'one/cacert.pem')){
-					$this->option[CURLOPT_CAINFO] = $curl .'one/cacert.pem';
+				$file = $curl .'one/cacert.pem';
+				if(!array_key_exists(CURLOPT_CAINFO, $this->option) && file_exists($file)){
+					$this->option[CURLOPT_CAINFO] = $file;
 				}
 			}
 		}

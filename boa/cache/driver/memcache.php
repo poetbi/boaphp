@@ -15,6 +15,7 @@ class memcache{
         'prefix' => '',
 		'server' => ['localhost', 11211, true, 1, 1]
     ];
+	private $obj;
 
 	public function __construct($cfg){
 		if(!extension_loaded('memcache')){

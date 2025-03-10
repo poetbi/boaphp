@@ -10,7 +10,7 @@ class image{
 	private $obj;
 
 	public function __construct($cfg = []){
-		if(!$cfg['driver']) $cfg['driver'] = 'gd';
+		if(!array_key_exists('driver', $cfg)) $cfg['driver'] = 'gd';
 
 		$driver = '\\boa\\image\\driver\\'. $cfg['driver'];
 		$this->obj = new $driver($cfg);

@@ -10,7 +10,7 @@ class mail{
 	private $obj;
 
     public function __construct($cfg = []){
- 		if(!$cfg['driver']) $cfg['driver'] = 'smtp';
+ 		if(!array_key_exists('driver', $cfg)) $cfg['driver'] = 'smtp';
 
 		$driver = '\\boa\\mail\\driver\\'. $cfg['driver'];
 		$this->obj = new $driver($cfg);

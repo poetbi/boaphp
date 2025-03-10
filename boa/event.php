@@ -21,7 +21,7 @@ class event{
 		if(array_key_exists('auto', $cfg)){
 			$this->cfg['auto'] = $cfg['auto'];
 		}
-		if($cfg['listener']){
+		if(array_key_exists('listener', $cfg) && $cfg['listener']){
 			$this->cfg['listener'] = array_merge($this->cfg['listener'], $cfg['listener']);
 		}
     }

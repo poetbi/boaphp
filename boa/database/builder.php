@@ -9,7 +9,11 @@ namespace boa\database;
 use boa\boa;
 use boa\msg;
 
-class builder{
+class builder extends \boa\database\base{
+	public $cfg = [
+		'type' => 'mysql'
+	];
+
 	private $select = 'SELECT %distinct%%field% FROM %table%%force%%join%%where%%group%%having%%order%%limit%%union%%lock%';
 	private $insert = 'INSERT INTO %table%%fields% VALUES %values%';
 	private $update = 'UPDATE %table% SET %fields%%where%';
@@ -17,8 +21,9 @@ class builder{
 	private $data = [];
 	private $getsql = false;
 
-	public function __construct($table){
+	public function __construct($table, $type){
 		$this->data['table'] = $table;
+		$this->cfg['type'] = $type;
 	}
 
 	public function distinct($field){
@@ -34,6 +39,7 @@ class builder{
 	}
 
 	public function join($table, $on, $type = 'LEFT'){
+		if(!array_key_exists('join', $this->data)) $this->data['join'] = '';
 		$this->data['join'] .= " $type JOIN $table ON $on";
 	}
 
@@ -82,9 +88,9 @@ class builder{
 		$this->getsql = true;
 	}
 
-	public function select($type = 0, $db){
-		if(!$this->data['field']){
-			if($this->data['distinct']){
+	public function select($type, $db){
+		if(!array_key_exists('field', $this->data)){
+			if(array_key_exists('distinct', $this->data)){
 				msg::set('boa.error.104');
 			}else{
 				$this->data['field'] = '*';
@@ -94,7 +100,8 @@ class builder{
 		$sql = $this->select;
 		preg_match_all('/%(\w+)%/', $sql, $arr);
 		foreach($arr[1] as $k => $v){
-			$sql = str_replace($arr[0][$k], $this->data[$v], $sql);
+			$str = array_key_exists($v, $this->data) ? $this->data[$v] : '';
+			$sql = str_replace($arr[0][$k], $str, $sql);
 		}
 
 		if($this->getsql){
@@ -114,7 +121,7 @@ class builder{
 			if($v === null){
 				$values[$k] = 'NULL';
 			}else{
-				$values[$k] = "'". addslashes($v) ."'";
+				$values[$k] = $this->escape($v);
 			}
 		}
 		$this->data['values'] = '('. implode(', ', $values) .')';
@@ -134,7 +141,7 @@ class builder{
 			if($v === null){
 				$fields .= ", $k = NULL";
 			}else{
-				$fields .= ", $k = '". addslashes($v) ."'";
+				$fields .= ", $k = ". $this->escape($v);
 			}
 		}
 		$this->data['fields'] = substr($fields, 1);
@@ -148,7 +155,8 @@ class builder{
 	private function exec_sql($db, $sql){
 		preg_match_all('/%(\w+)%/', $sql, $arr);
 		foreach($arr[1] as $k => $v){
-			$sql = str_replace($arr[0][$k], $this->data[$v], $sql);
+			$str = array_key_exists($v, $this->data) ? $this->data[$v] : '';
+			$sql = str_replace($arr[0][$k], $str, $sql);
 		}
 
 		if($this->getsql){

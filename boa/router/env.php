@@ -38,6 +38,8 @@ class env{
 	}
 
 	public function get(){
+		$this->env = [];
+
 		if($this->cfg['enable'] && $this->request['path']){
 			foreach($this->router as $group => $rules){
 				$arr = parse_url($group);
@@ -165,11 +167,11 @@ class env{
 
 			$this->parse_env($arr);
 		}
-		
-		if($this->env && $this->env['var']['page'] < 1){
+
+		if(!isset($this->env['var']['page']) || $this->env['var']['page'] < 1){
 			$this->env['var']['page'] = 1;
 		}
-		
+
 		return $this->env;
 	}
 	

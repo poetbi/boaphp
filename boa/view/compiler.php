@@ -19,7 +19,8 @@ class compiler{
 	private $cfg = [
 		'static' => true
 	];
-	
+	private $funs = ['isset', 'unset', 'empty', 'echo', 'print'];
+
 	public function __construct(){
 		$this->tag = '/'. chr(8) .'\d+'. chr(8) .'/';
 		$cfg = boa::const('COMPILER');
@@ -50,6 +51,7 @@ class compiler{
 	}
 
 	private function header(){
+		$session = '';
 		if(strpos($this->html, '$_SESSION') !== false){
 			if(strpos($this->html, 'boa::session') === false){
 				$session = 'boa::session();';
@@ -59,6 +61,7 @@ class compiler{
 	}
 
 	private function prepare(){
+		$depth = 0;
 		$re = '/'. $this->_s .'inc\s+([^\{\}]+?)'. $this->_e .'/';
 		do{
 			$depth++;
@@ -93,6 +96,7 @@ class compiler{
 	}
 
 	private function reverse(){
+		$j = 0;
 		do{
 			$arr = [];
 			foreach($this->tags as $i => $tag){
@@ -237,8 +241,9 @@ class compiler{
 	}
 
 	private function cb_fun($m){
-		if(!function_exists($m[1])){
-			return '{'. $m[1] . $m[2] .'}';
+		if(!function_exists($m[1]) && 
+		!in_array($m[1], $this->funs)){
+			return $m[0];
 		}
 
 		$fun = $m[1];

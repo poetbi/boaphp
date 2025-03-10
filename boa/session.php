@@ -10,7 +10,7 @@ class session{
 	private $obj;
 
 	public function __construct($cfg = []){
-		if(!$cfg['driver']) $cfg['driver'] = 'file';
+		if(!array_key_exists('driver', $cfg)) $cfg['driver'] = 'file';
 
 		$driver = '\\boa\\session\\driver\\'. $cfg['driver'];
 		$this->obj = new $driver($cfg);
@@ -29,11 +29,14 @@ class session{
 	}
 
 	public function get($key){
+		$val = null;
 		$arr = explode('.', $key);
-		$val = $_SESSION[$arr[0]];
-		$num = count($arr);
-		for($i = 1; $i < $num; $i++){
-			$val = $val[$arr[$i]];
+		if(array_key_exists($arr[0], $_SESSION)){
+			$val = $_SESSION[$arr[0]];
+			$num = count($arr);
+			for($i = 1; $i < $num; $i++){
+				$val = $val[$arr[$i]];
+			}
 		}
 		return $val;
 	}

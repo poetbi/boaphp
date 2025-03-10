@@ -20,6 +20,7 @@ class memcached{
 		'server' => ['localhost', 11211, 1],
         'option' => []
     ];
+	private $obj;
 
 	public function __construct($cfg){
 		if(!extension_loaded('memcached')){

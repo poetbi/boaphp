@@ -71,6 +71,9 @@ class msg{
 			
 			$log = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
 			array_shift($log);
+			if($log[0]['line'] != $line || $log[0]['file'] != $file){
+				array_unshift($log, ['file' => $file, 'line' => $line]);
+			}
 			$arr['log'] = self::handle_log($log);
 
 			boa::log()->set($type, '['. $arr['key'] .']'. current($arr['log']) .' '. strip_tags($arr['msg']));
@@ -163,6 +166,7 @@ class msg{
 		$data = self::$data;
 		self::$data = [];
 
+		$str = '';
 		$view = boa::view();
 		switch(self::$type){
 			case 'msg':
