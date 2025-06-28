@@ -10,7 +10,7 @@ body{
     justify-content: center;
     align-items: center;
 	box-sizing: border-box;
-	font-weight: 200;
+	font-weight: normal;
 }
 dl{
 	border: solid 1px #CCC;
@@ -40,9 +40,5 @@ dd .file{
 }
 h1, h2, h3{
 	text-align: center;
-	font-weight: 200;
-}
-
-@media (max-width:800px) OR (max-height:800px){
-	*{font-weight: normal}
+	font-weight: normal;
 }

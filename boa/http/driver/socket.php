@@ -108,7 +108,7 @@ class socket extends driver{
 		$this->result['head'] = substr($response, 0, $pos);
 		$this->result['body'] = substr($response, $pos + 4);
 
-		preg_match('/HTTP\/[0-2]\.[0-9]\s+(\d{3})\s+(.+?)[\r\n]/', $this->result['head'], $res);
+		preg_match('/^HTTP\/[\d\.]+\s+(\d{3})\s+(.+?)[\r\n]/', $this->result['head'], $res);
 		$this->result['code'] = $res[1];
 		if($res[1] != 200){
 			$this->result['msg'] = $res[2];

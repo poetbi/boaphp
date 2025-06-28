@@ -8,7 +8,7 @@ namespace boa;
 
 class cookie extends base{
 	protected $cfg = [
-		'prefix' => 'bs_',
+		'prefix' => '',
 		'lifetime' => 0,
 		'path' => '/',
 		'domain' => '',
@@ -17,10 +17,13 @@ class cookie extends base{
 	];
 
 	public function get($key){
+		$val = null;
 		$key = $this->cfg['prefix'] . $key;
-		$val = $_COOKIE[$key];
-		if(substr($val, 0, 1) == chr(8)){
-			$val = $this->dec(substr($val, 1));
+		if(array_key_exists($key, $_COOKIE)){
+			$val = $_COOKIE[$key];
+			if(substr($val, 0, 1) == chr(8)){
+				$val = $this->dec(substr($val, 1));
+			}
 		}
 		return $val;
 	}

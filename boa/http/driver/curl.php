@@ -89,7 +89,7 @@ class curl extends driver{
 		$this->result['head'] = trim($arr[0]);
 		$this->result['body'] = $arr[1];
 
-		preg_match('/^HTTP\/[\d\.]+ (\d{3})/', $this->result['head'], $res);
+		preg_match('/^HTTP\/[\d\.]+\s+(\d{3})\s+(.+?)[\r\n]/', $this->result['head'], $res);
 		$this->result['code'] = $res[1];
 		if($res[1] != 200){
 			$this->result['msg'] = $res[2];

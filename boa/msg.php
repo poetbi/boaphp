@@ -71,7 +71,7 @@ class msg{
 			
 			$log = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
 			array_shift($log);
-			if($log[0]['line'] != $line || $log[0]['file'] != $file){
+			if($line && isset($log[0]['line']) && $log[0]['line'] != $line){
 				array_unshift($log, ['file' => $file, 'line' => $line]);
 			}
 			$arr['log'] = self::handle_log($log);
@@ -230,6 +230,7 @@ class msg{
 			if(array_key_exists('function', $v)){
 				$item .= $v['function'] .'()';
 			}
+			$item = str_replace('boa\boa::error()', '', $item);
 			$log[$k] = $item;
 		}
 		return $log;

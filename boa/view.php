@@ -90,7 +90,9 @@ class view{
 			msg::set_type('str');
 			require($__file);
 			if($return){
-				return ob_get_contents();
+				$str = ob_get_contents();
+				ob_clean();
+				return $str;
 			}
 		}else{
 			msg::set('boa.error.2', $__file);
