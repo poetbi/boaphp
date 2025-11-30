@@ -311,7 +311,11 @@ class boa{
 		$file = BS_MOD ."$mod/library/$cls.php";
 		if(file_exists($file)){
 			$cls = "\\mod\\$mod\\library\\$cls";
-			return new $cls($args);
+			if($args === null){
+				return new $cls();
+			}else{
+				return new $cls($args);
+			}
 		}else{
 			msg::set('boa.error.2', $file);
 		}

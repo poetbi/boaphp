@@ -8,7 +8,7 @@ namespace boa;
 
 class file extends base{
 	protected $cfg = [
-		'mode' => 0755,
+		'mode' => 0777,
 		'safe_mode' => false,
 		'safe_path' => BS_WWW
 	];
@@ -32,7 +32,7 @@ class file extends base{
 		return file_put_contents($file, $str, $flag);
 	}
 
-	public function chmod($path, $mode = 0755){
+	public function chmod($path, $mode = 0777){
 		$fp = opendir($path);
 		if($fp){
 			while(false !== ($v = readdir($fp))){

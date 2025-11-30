@@ -17,7 +17,7 @@ class file{
 		}
 
 		if(!file_exists($this->cfg['path'])){
-			mkdir($this->cfg['path'], 0755, true);
+			mkdir($this->cfg['path'], 0777, true);
 		}
 		session_save_path($this->cfg['path']);
 		

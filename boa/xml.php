@@ -45,7 +45,7 @@ class xml extends base{
 			$col = xml_get_current_column_number($parser);
 			msg::set('boa.error.73', $line, $col, "[$errno]$err");
 		}
-		xml_parser_free($parser);
+		if(function_exists('xml_parser_free')) xml_parser_free($parser); //PHP 8.5
 
 		$this->max = count($this->value);
 		$arr = $this->read_xml(0);

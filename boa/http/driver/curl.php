@@ -36,7 +36,7 @@ class curl extends driver{
 	}
 	
 	public function __destruct(){
-		curl_close($this->ch);
+		if(function_exists('curl_close')) curl_close($this->ch); //PHP 8.5
 	}
 
 	public function set_cookie($cookie){
